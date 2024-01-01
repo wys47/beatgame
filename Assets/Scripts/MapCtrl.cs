@@ -29,7 +29,7 @@ public class MapCtrl : MonoBehaviour //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇ
     private int GameState;
     private float BeatCnt;
 
-    void Start()
+    void Start()//¸Ê °¢µµ µ¹¸®±â(´ÙÀÌ¾Æ¸óµå ¸ð¾ç)
     {
         for (int y = 4; y >= -4; --y)
         {
@@ -42,7 +42,10 @@ public class MapCtrl : MonoBehaviour //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇ
 
         for (int i = 1; ; ++i)
         {
-            if (musics[i] != null) waitSec[i] = new WaitForSeconds(240 / musicsBPM[i]);
+            if (musics[i] != null)
+            {
+                waitSec[i] = new WaitForSeconds(240f / musicsBPM[i]);
+            }
             else break;
         }
     }
@@ -65,15 +68,13 @@ public class MapCtrl : MonoBehaviour //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇ
         {
             if (GameState == 0)
             {
-                
+                if (BeatCnt >= 3.25f) GameState++;
             }
             if (GameState == 1)
             {
-
+                PlayGameSound(GameSound[1]);
             }
-
-            print(BeatCnt);
-            PlayGameSound(GameSound[1]);
+            
             BeatCnt++;
             /*if (BeatCnt % 1 == 0 && BeatCnt % 2 == 0) PlayGameSound(GameSound[1]);
             BeatCnt += 0.25f;*/
