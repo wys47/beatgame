@@ -1,0 +1,65 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NodesTimingCS : Variables
+{
+    public SettingCS settingCS;
+
+    private static int maxSong = 1;
+
+    private string[] nodeInString = new string[2]
+    {
+        "",
+
+        "0e,1.5f,4f,6f,8f,10f,12f,14f,15s,19f,21f,22f,23f,25f,26.5f,29f,30f,31f,32f,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
+    };
+    [HideInInspector] public float[,,] nodesTiming = new float[maxSong + 1, maxTiming, 3];//0.최대타이밍,1.타이밍,2.이벤트
+
+    private void Start()
+    {
+        int readMode = 0;
+        string num = "";
+        int nodeCnt = 0;
+        for (int i = 1; i < nodeInString.Length; ++i)
+        {
+            nodeCnt = 1;
+            for (int k = 0; k < nodeInString[i].Length; ++k)
+            {
+                char ch = nodeInString[i][k];
+                if (readMode == 0)
+                {
+                    if (char.IsDigit(ch)) readMode = 1;
+                }
+                if (readMode == 1)
+                {
+                    if (!char.IsLetter(ch))
+                    {
+                        num += ch;
+                    }
+                    else
+                    {
+                        if (ch == 'f') nodesTiming[i, nodeCnt, 2] = 0;
+                        else
+                        {
+                            switch (ch)
+                            {
+                                case 'q': nodesTiming[i, nodeCnt, 2] = 1; break;
+                                case 'w': nodesTiming[i, nodeCnt, 2] = 2; break;
+                                case 'e': nodesTiming[i, nodeCnt, 2] = 3; break;
+                                case 'a': nodesTiming[i, nodeCnt, 2] = 11; break;
+                                case 's': nodesTiming[i, nodeCnt, 2] = 12; break;
+                            }
+                        }
+
+                        nodesTiming[i, nodeCnt++, 1] = float.Parse(num) + settingCS.sinc;
+                        num = "";
+                        readMode = 0;
+                    }
+                }
+            }
+
+            nodesTiming[i, 0, 0] = nodeCnt - 1;
+        }
+    }
+}
