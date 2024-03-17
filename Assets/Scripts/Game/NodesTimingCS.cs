@@ -12,9 +12,15 @@ public class NodesTimingCS : Variables
     {
         "",
 
-        "0e,1.5f,4f,6f,8f,10f,12f,14f,15s,19f,21f,22f,23f,25f,26.5f,29f,30f,31f,32f,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
+        "0f,1.5f,4f,6f,8f,10f,12f,14f,15s,19f,21f,22f,23f,25f,26.5f,29q,30w,31w,32w,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
     };
-    [HideInInspector] public float[,,] nodesTiming = new float[maxSong + 1, maxTiming, 3];//0.최대타이밍,1.타이밍,2.이벤트
+    public struct nodesTimingDef
+    {
+        public int maxTiming;
+        public float timing;
+        public int eventNum;
+    }
+    [HideInInspector] public nodesTimingDef[,] nodesTiming = new nodesTimingDef[maxSong + 1, maxTiming];//0.최대타이밍,1.타이밍,2.이벤트
 
     private void Start()
     {
@@ -39,27 +45,26 @@ public class NodesTimingCS : Variables
                     }
                     else
                     {
-                        if (ch == 'f') nodesTiming[i, nodeCnt, 2] = 0;
+                        if (ch == 'f') nodesTiming[i, nodeCnt].eventNum = 0;
                         else
                         {
                             switch (ch)
                             {
-                                case 'q': nodesTiming[i, nodeCnt, 2] = 1; break;
-                                case 'w': nodesTiming[i, nodeCnt, 2] = 2; break;
-                                case 'e': nodesTiming[i, nodeCnt, 2] = 3; break;
-                                case 'a': nodesTiming[i, nodeCnt, 2] = 11; break;
-                                case 's': nodesTiming[i, nodeCnt, 2] = 12; break;
+                                case 'q': nodesTiming[i, nodeCnt].eventNum = 1; break;
+                                case 'w': nodesTiming[i, nodeCnt].eventNum = 2; break;
+                                case 'a': nodesTiming[i, nodeCnt].eventNum = 11; break;
+                                case 's': nodesTiming[i, nodeCnt].eventNum = 12; break;
                             }
                         }
 
-                        nodesTiming[i, nodeCnt++, 1] = float.Parse(num) + settingCS.sinc;
+                        nodesTiming[i, nodeCnt++].timing = float.Parse(num) + settingCS.sinc;
                         num = "";
                         readMode = 0;
                     }
                 }
             }
 
-            nodesTiming[i, 0, 0] = nodeCnt - 1;
+            nodesTiming[i, 0].maxTiming = nodeCnt - 1;
         }
     }
 }

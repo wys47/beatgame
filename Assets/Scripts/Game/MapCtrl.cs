@@ -307,7 +307,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     }
                 }
 
-                if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1, 2] > 10 && nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1, 1] == beatCnt) StartCoroutine(MapAnimation((int)nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1, 2]));
+                if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum > 10 && nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt) StartCoroutine(MapAnimation(nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum));
 
                 afterBeatCntPlus = false;
 
@@ -340,12 +340,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     }
                     else if (makeMode == 2)
                     {
-                        if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive, 1] == beatCnt)
+                        if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].timing == beatCnt)
                         {
                             playGameSound(gameSound[1]);
-                            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive, 2] != 0)
+                            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].eventNum != 0)
                             {
-                                if (nodeCntActive >= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0] || nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive + 1, 1] - beatCnt > PlusBeatInOneUpdate * maxMapSize + maxMapAnimationPlayBeat) StartCoroutine(MapAnimation((int)nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive, 2]));
+                                if (nodeCntActive >= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming || nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive + 1].timing - beatCnt > PlusBeatInOneUpdate * maxMapSize + maxMapAnimationPlayBeat) StartCoroutine(MapAnimation((int)nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].eventNum));
                             }
 
                             ++nodeCntActive;
@@ -457,22 +457,22 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     private void onFirstUpdate()
     {
-        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0] + 1; ++i) nodeActiveInfo[i].activeTiming = PlusBeatInOneUpdate * 0.5f;
+        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming + 1; ++i) nodeActiveInfo[i].activeTiming = PlusBeatInOneUpdate * 0.5f;
 
-        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0]; ++i)
+        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++i)
         {
-            float timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1] + PlusBeatInOneUpdate - Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize) * PlusBeatInOneUpdate;
+            float timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - (nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum == 1 ? 8 : Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize)) * PlusBeatInOneUpdate;
 
-            for (int k = 1; k <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0]; ++k)
+            for (int k = 1; k <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++k)
             {
-                int nodeEvent = (int)nodesTimingCS.nodesTiming[currentPlayingTrack, i, 2];
-                if (nodeEvent >= 1 && nodeEvent <= 3) gameUIManager.scoreBoardCS.nodeCnt += nodeEvent + 1;
+                int nodeEvent = nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum;
+                if (nodeEvent >= 1 && nodeEvent <= 2) gameUIManager.scoreBoardCS.nodeCnt += nodeEvent + 1;
                 else ++gameUIManager.scoreBoardCS.nodeCnt;
 
                 if (nodeActiveInfo[k].activeTiming == PlusBeatInOneUpdate * 0.5f)
                 {
                     nodeActiveInfo[k].activeTiming = timing;
-                    nodeActiveInfo[k].timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1];
+                    nodeActiveInfo[k].timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing;
                     break;
                 }
                 else if (nodeActiveInfo[k].activeTiming > timing)
@@ -483,7 +483,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                         nodeActiveInfo[j].timing = nodeActiveInfo[j - 1].timing;
                     }
                     nodeActiveInfo[k].activeTiming = timing;
-                    nodeActiveInfo[k].timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1];
+                    nodeActiveInfo[k].timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing;
                     break;
                 }
             }
@@ -552,9 +552,9 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
             if (generateMode == 1)
             {
-                if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1, 2] > 0 && nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1, 2] <= 10)
+                if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum > 0 && nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum <= 10)
                 {
-                    genClickNodeCnt = (int)nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1, 2];
+                    genClickNodeCnt = nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum;
                     clickNodeGenPos[0] = genClickNodeCnt;
                 }
 
