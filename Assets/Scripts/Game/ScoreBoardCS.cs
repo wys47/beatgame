@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreBoardCS : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class ScoreBoardCS : MonoBehaviour
     private const int tapChainPoint = 100;
     private const int clickPoint = 300;
     private const int clickChainPoint = 200;
+
+    public TextMesh scoreText;
+    public TextMesh accuracyText;
 
     [HideInInspector] public int nodeCnt;
 
@@ -90,5 +94,10 @@ public class ScoreBoardCS : MonoBehaviour
         clickCnt = 0;
         clickScoreTotal = 0;
         clickAll = true;
+    }
+
+    public void showScoreboard()
+    {
+
     }
 }

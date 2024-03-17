@@ -11,7 +11,7 @@ public class NodeCS : Variables
     [HideInInspector] public int color;
     [HideInInspector] public int dir;
     [HideInInspector] public int targetTileNum;
-    [HideInInspector] public int generateMode;//1. 오리지널 노드 생성, 2. 짝 노드 생성, 3. 연쇄 노드 생성
+    [HideInInspector] public int generateMode;
     [HideInInspector] public int clickTileNum;
 
     private void Awake()
@@ -133,8 +133,8 @@ public class NodeCS : Variables
                 if (!loop) break;
             }
 
-            mapCtrl.zoneActiveInfo[mapCtrl.zoneByTileNum(targetTileNum), 1] = color;
-            mapCtrl.zoneActiveInfo[mapCtrl.zoneByTileNum(targetTileNum), 2] = timing;
+            mapCtrl.zoneActiveInfo[mapCtrl.zoneByTileNum(targetTileNum)].colorCode = color;
+            mapCtrl.zoneActiveInfo[mapCtrl.zoneByTileNum(targetTileNum)].timing = timing;
 
             mapCtrl.activateNode(pairActiveTiming, timing, color, 2, targetTileNum, pairDir);
             deActivate();

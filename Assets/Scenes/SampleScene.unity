@@ -4778,7 +4778,7 @@ MonoBehaviour:
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
-  gameUIManager: {fileID: 0}
+  gameUIManager: {fileID: 1488213310}
   musicManager: {fileID: 1100659883}
   nodesTimingCS: {fileID: 1065914616}
   makeMode: 0
@@ -5239,7 +5239,7 @@ MonoBehaviour:
   musicCnt: 1
   music:
   - {fileID: 8300000, guid: f025e3d535e9bf945a88d7ed6e148d56, type: 3}
-  - {fileID: 8300000, guid: 6dbb835fa7693bc448ae166b40725453, type: 3}
+  - {fileID: 8300000, guid: 65f6f2c34ed5f18448fe97b03cf9cf93, type: 3}
   musicName:
   - 
   - Janji - Heroes Tonight
@@ -6125,6 +6125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82019e049474b214da04b08ac9e4c34b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreText: {fileID: 0}
+  accuracyText: {fileID: 0}
   nodeCnt: 0
   tapAll: 0
   clickAll: 0

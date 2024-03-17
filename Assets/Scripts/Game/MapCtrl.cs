@@ -42,7 +42,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     public GameObject[] zoneObj;
     private SpriteRenderer[] zoneSprites = new SpriteRenderer[4];
-    [HideInInspector] public float[,] zoneActiveInfo = new float[4, 3];//1.ÄÃ·¯
+    public struct zoneActiveInfoDef
+    {
+        public int colorCode;
+        public float timing;
+    } 
+    [HideInInspector] public zoneActiveInfoDef[] zoneActiveInfo = new zoneActiveInfoDef[4];
     private WaitForSeconds zoneFadeTime = new WaitForSeconds(0.05f);
 
     public GameObject mapGlowObj;
@@ -63,7 +68,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     [HideInInspector] public float beatCnt;
     private bool afterBeatCntPlus;
 
-    private float[,] nodeActiveInfo = new float[maxTiming, 2];//0.¹ßµ¿Å¸ÀÌ¹Ö,1.Å¸ÀÌ¹Ö
+    private struct nodeActiveInfoDef
+    {
+        public float activeTiming;
+        public float timing;
+    }
+    private nodeActiveInfoDef[] nodeActiveInfo = new nodeActiveInfoDef[maxTiming];
     private int nodeCntActive;
     private int nodeCycle;
 
@@ -73,7 +83,13 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private int[] palette = new int[maxColor + 1];
     private int useColorCnt;
 
-    private int[,] collide = new int[4, 3];//0.Å¸ÀÏ³Ñ¹ö,1.¿ì¼± ³ëµå ¼øÀ§,2.¹æÇâ
+    private struct collodeDef
+    {
+        public int tileNum;
+        public int primeNodeRank;
+        public int dir;
+    }
+    private collodeDef[] collide = new collodeDef[4];
 
     private int itsTime;
 
@@ -174,15 +190,20 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                 for (int i = 1; i <= 3; ++i)
                 {
-                    collide[i, 0] = 0;
-                    collide[i, 1] = 0;
-                    collide[i, 2] = 0;
+                    collide[i].tileNum = 0;
+
+                    if (collide[i].primeNodeRank == 2) gameUIManager.scoreBoardCS.onTapTiming(false);
+                    collide[i].primeNodeRank = 0;
+
+                    collide[i].dir = 0;
                 }
 
                 for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
                 {
                     for (int k = 1; k < maxNodeDir; ++k)
                     {
+                        if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0, 0);
+
                         int targetTileNum = tileCS[i].tileNodeTargetTileNum[k, 0];
                         if (targetTileNum == 0) continue;
                         int zone = zoneByTileNum(targetTileNum);
@@ -193,20 +214,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                             if (diff == maxMapSize)
                             {
-                                if (collide[zone, 1] == 0)
+                                if (collide[zone].primeNodeRank == 0)
                                 {
-                                    collide[zone, 0] = i;
-                                    collide[zone, 1] = 1;
-                                    collide[zone, 2] = k;
+                                    collide[zone].tileNum = i;
+                                    collide[zone].primeNodeRank = 1;
+                                    collide[zone].dir = k;
                                 }
                             }
                             else if (diff == 0)
                             {
-                                collide[zone, 0] = i;
-                                collide[zone, 1] = 2;
-                                collide[zone, 2] = k;
-
-                                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0, 0);
+                                collide[zone].tileNum = i;
+                                collide[zone].primeNodeRank = 2;
+                                collide[zone].dir = k;
                             }
                         }
                         else if (k == 2)
@@ -215,20 +234,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                             if (diff == maxMapSize)
                             {
-                                if (collide[zone, 1] == 0)
+                                if (collide[zone].primeNodeRank == 0)
                                 {
-                                    collide[zone, 0] = i;
-                                    collide[zone, 1] = 1;
-                                    collide[zone, 2] = k;
+                                    collide[zone].tileNum = i;
+                                    collide[zone].primeNodeRank = 1;
+                                    collide[zone].dir = k;
                                 }
                             }
                             else if (diff == 0)
                             {
-                                collide[zone, 0] = i;
-                                collide[zone, 1] = 2;
-                                collide[zone, 2] = k;
-
-                                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0, 0);
+                                collide[zone].tileNum = i;
+                                collide[zone].primeNodeRank = 2;
+                                collide[zone].dir = k;
                             }
                         }
                         else if (k == 3)
@@ -237,20 +254,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                             if (diff == 1)
                             {
-                                if (collide[zone, 1] == 0)
+                                if (collide[zone].primeNodeRank == 0)
                                 {
-                                    collide[zone, 0] = i;
-                                    collide[zone, 1] = 1;
-                                    collide[zone, 2] = k;
+                                    collide[zone].tileNum = i;
+                                    collide[zone].primeNodeRank = 1;
+                                    collide[zone].dir = k;
                                 }
                             }
                             else if (diff == 0)
                             {
-                                collide[zone, 0] = i;
-                                collide[zone, 1] = 2;
-                                collide[zone, 2] = k;
-
-                                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0, 0);
+                                collide[zone].tileNum = i;
+                                collide[zone].primeNodeRank = 2;
+                                collide[zone].dir = k;
                             }
                         }
                         else if (k == 4)
@@ -259,20 +274,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                             if (diff == 1)
                             {
-                                if (collide[zone, 1] == 0)
+                                if (collide[zone].primeNodeRank == 0)
                                 {
-                                    collide[zone, 0] = i;
-                                    collide[zone, 1] = 1;
-                                    collide[zone, 2] = k;
+                                    collide[zone].tileNum = i;
+                                    collide[zone].primeNodeRank = 1;
+                                    collide[zone].dir = k;
                                 }
                             }
                             else if (diff == 0)
                             {
-                                collide[zone, 0] = i;
-                                collide[zone, 1] = 2;
-                                collide[zone, 2] = k;
-
-                                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0, 0);
+                                collide[zone].tileNum = i;
+                                collide[zone].primeNodeRank = 2;
+                                collide[zone].dir = k;
                             }
                         }
                     }
@@ -280,16 +293,16 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                 for (int i = 1; i <= 3; ++i)
                 {
-                    if (zoneActiveInfo[i, 1] != 0)
+                    if (zoneActiveInfo[i].colorCode != 0)
                     {
-                        if (zoneActiveInfo[i, 2] != beatCnt)
+                        if (zoneActiveInfo[i].timing != beatCnt)
                         {
-                            if (!zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, (int)zoneActiveInfo[i, 1], true));
+                            if (!zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, true));
                         }
                         else
                         {
-                            if (zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, (int)zoneActiveInfo[i, 1], false));
-                            zoneActiveInfo[i, 1] = 0;
+                            if (zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, false));
+                            zoneActiveInfo[i].colorCode = 0;
                         }
                     }
                 }
@@ -312,7 +325,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTempTileColor(i);
                     for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTileColorFromTemp();
 
-                    if (nodeActiveInfo[nodeCntActive, 0] == beatCnt) onNodeActiveTiming();
+                    if (nodeActiveInfo[nodeCntActive].activeTiming == beatCnt) onNodeActiveTiming();
 
                     for (int i = 1; i <= maxNode; ++i)
                     {
@@ -342,74 +355,74 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             }
 
             int ClickTileZone = 0;
-            if (collide[1, 1] != 0)
+            if (collide[1].primeNodeRank != 0)
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
-                    if (collide[1, 1] == 2)
+                    if (collide[1].primeNodeRank == 2)
                     {
-                        StartCoroutine(tileCS[collide[1, 0]].glowImageSwitch(true));
+                        StartCoroutine(tileCS[collide[1].tileNum].glowImageSwitch(true));
                         gameUIManager.scoreBoardCS.onTapTiming(true);
                     }
                     else gameUIManager.scoreBoardCS.onPreTap();
 
-                    tileCS[collide[1, 0]].changeTileColorAndInfo(collide[1, 2], false, -1, 0);
+                    tileCS[collide[1].tileNum].changeTileColorAndInfo(collide[1].dir, false, -1, 0);
+                    collide[1].primeNodeRank = 0;
                 }
-                else if (collide[1, 1] == 2) gameUIManager.scoreBoardCS.onTapTiming(false);
 
-                if (collide[1, 1] == 2 && tileCS[collide[1, 0]].tileNodeTargetTileNum[collide[1, 2], 1] != 0) ClickTileZone = 1;
+                if (collide[1].primeNodeRank == 2 && tileCS[collide[1].tileNum].tileNodeTargetTileNum[collide[1].dir, 1] != 0) ClickTileZone = 1;
             }
-            if (collide[2, 1] != 0)
+            if (collide[2].primeNodeRank != 0)
             {
                 if (Input.GetKeyDown(KeyCode.S))
                 {
-                    if (collide[2, 1] == 2)
+                    if (collide[2].primeNodeRank == 2)
                     {
-                        StartCoroutine(tileCS[collide[2, 0]].glowImageSwitch(true));
+                        StartCoroutine(tileCS[collide[2].tileNum].glowImageSwitch(true));
                         gameUIManager.scoreBoardCS.onTapTiming(true);
                     }
                     else gameUIManager.scoreBoardCS.onPreTap();
 
-                    tileCS[collide[2, 0]].changeTileColorAndInfo(collide[2, 2], false, -1, 0);
+                    tileCS[collide[2].tileNum].changeTileColorAndInfo(collide[2].dir, false, -1, 0);
+                    collide[2].primeNodeRank = 0;
                 }
-                else if (collide[2, 1] == 2) gameUIManager.scoreBoardCS.onTapTiming(false);
 
-                if (collide[2, 1] == 2 && tileCS[collide[2, 0]].tileNodeTargetTileNum[collide[2, 2], 1] != 0) ClickTileZone = 2;
+                if (collide[2].primeNodeRank == 2 && tileCS[collide[2].tileNum].tileNodeTargetTileNum[collide[2].dir, 1] != 0) ClickTileZone = 2;
             }
-            if (collide[3, 1] != 0)
+            if (collide[3].primeNodeRank != 0)
             {
                 if (Input.GetKeyDown(KeyCode.D))
                 {
-                    if (collide[3, 1] == 2)
+                    if (collide[3].primeNodeRank == 2)
                     {
-                        StartCoroutine(tileCS[collide[3, 0]].glowImageSwitch(true));
+                        StartCoroutine(tileCS[collide[3].tileNum].glowImageSwitch(true));
                         gameUIManager.scoreBoardCS.onTapTiming(true);
                     }
                     else gameUIManager.scoreBoardCS.onPreTap();
 
-                    tileCS[collide[3, 0]].changeTileColorAndInfo(collide[3, 2], false, -1, 0);
+                    tileCS[collide[3].tileNum].changeTileColorAndInfo(collide[3].dir, false, -1, 0);
+                    collide[3].primeNodeRank = 0;
                 }
-                else if (collide[3, 1] == 2) gameUIManager.scoreBoardCS.onTapTiming(false);
 
-                if (collide[3, 1] == 2 && tileCS[collide[3, 0]].tileNodeTargetTileNum[collide[3, 2], 1] != 0) ClickTileZone = 3;
+                if (collide[3].primeNodeRank == 2 && tileCS[collide[3].tileNum].tileNodeTargetTileNum[collide[3].dir, 1] != 0) ClickTileZone = 3;
             }
 
             if (ClickTileZone != 0)
             {
-                tileCS[tileCS[collide[ClickTileZone, 0]].tileNodeTargetTileNum[collide[ClickTileZone, 2], 1]].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1);
-                tileCS[tileCS[collide[ClickTileZone, 0]].tileNodeTargetTileNum[collide[ClickTileZone, 2], 1]].updateTileColor();
+                tileCS[tileCS[collide[ClickTileZone].tileNum].tileNodeTargetTileNum[collide[ClickTileZone].dir, 1]].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1);
+                tileCS[tileCS[collide[ClickTileZone].tileNum].tileNodeTargetTileNum[collide[ClickTileZone].dir, 1]].updateTileColor();
 
                 bool clickSuccess = false;
                 if (Input.GetMouseButton(0))
                 {
                     RaycastHit2D raycastHit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.forward, Vector3.forward, 2);
-                    if (raycastHit2D && int.Parse(raycastHit2D.collider.name) == tileCS[collide[ClickTileZone, 0]].tileNodeTargetTileNum[collide[ClickTileZone, 2], 1])
+                    if (raycastHit2D && int.Parse(raycastHit2D.collider.name) == tileCS[collide[ClickTileZone].tileNum].tileNodeTargetTileNum[collide[ClickTileZone].dir, 1])
                     {
-                        StartCoroutine(tileCS[tileCS[collide[ClickTileZone, 0]].tileNodeTargetTileNum[collide[ClickTileZone, 2], 1]].glowImageSwitch(true, true));
+                        StartCoroutine(tileCS[tileCS[collide[ClickTileZone].tileNum].tileNodeTargetTileNum[collide[ClickTileZone].dir, 1]].glowImageSwitch(true, true));
                         clickSuccess = true;
                     }
                 }
-                tileCS[collide[ClickTileZone, 0]].changeTileColorAndInfo(collide[ClickTileZone, 2], false, -1, -1, 0);
+                tileCS[collide[ClickTileZone].tileNum].changeTileColorAndInfo(collide[ClickTileZone].dir, false, -1, -1, 0);
 
                 gameUIManager.scoreBoardCS.onClickTiming(clickSuccess);
             }
@@ -422,7 +435,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     {
         currentPlayingTrack = 1;
         for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
-        for (int i = 1; i <= 3; ++i) zoneActiveInfo[i, 1] = 0;
+        for (int i = 1; i <= 3; ++i) zoneActiveInfo[i].colorCode = 0;
         mapGlowObj.SetActive(false);
 
         beatSensor.rotation = Quaternion.Euler(0, 0, 0);
@@ -444,7 +457,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     private void onFirstUpdate()
     {
-        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0] + 1; ++i) nodeActiveInfo[i, 0] = PlusBeatInOneUpdate * 0.5f;
+        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0] + 1; ++i) nodeActiveInfo[i].activeTiming = PlusBeatInOneUpdate * 0.5f;
 
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0, 0]; ++i)
         {
@@ -456,21 +469,21 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 if (nodeEvent >= 1 && nodeEvent <= 3) gameUIManager.scoreBoardCS.nodeCnt += nodeEvent + 1;
                 else ++gameUIManager.scoreBoardCS.nodeCnt;
 
-                if (nodeActiveInfo[k, 0] == PlusBeatInOneUpdate * 0.5f)
+                if (nodeActiveInfo[k].activeTiming == PlusBeatInOneUpdate * 0.5f)
                 {
-                    nodeActiveInfo[k, 0] = timing;
-                    nodeActiveInfo[k, 1] = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1];
+                    nodeActiveInfo[k].activeTiming = timing;
+                    nodeActiveInfo[k].timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1];
                     break;
                 }
-                else if (nodeActiveInfo[k, 0] > timing)
+                else if (nodeActiveInfo[k].activeTiming > timing)
                 {
                     for (int j = i; j >= k + 1; --j)
                     {
-                        nodeActiveInfo[j, 0] = nodeActiveInfo[j - 1, 0];
-                        nodeActiveInfo[j, 1] = nodeActiveInfo[j - 1, 1];
+                        nodeActiveInfo[j].activeTiming = nodeActiveInfo[j - 1].activeTiming;
+                        nodeActiveInfo[j].timing = nodeActiveInfo[j - 1].timing;
                     }
-                    nodeActiveInfo[k, 0] = timing;
-                    nodeActiveInfo[k, 1] = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1];
+                    nodeActiveInfo[k].activeTiming = timing;
+                    nodeActiveInfo[k].timing = nodesTimingCS.nodesTiming[currentPlayingTrack, i, 1];
                     break;
                 }
             }
@@ -515,9 +528,9 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         do
         {
             color = palette[Random.Range(1, maxColor - useColorCnt + 1)];
-            activateNode(nodeActiveInfo[nodeCntActive, 0], nodeActiveInfo[nodeCntActive++, 1], color, 1);
+            activateNode(nodeActiveInfo[nodeCntActive].activeTiming, nodeActiveInfo[nodeCntActive++].timing, color, 1);
         }
-        while (nodeActiveInfo[nodeCntActive, 0] == beatCnt);
+        while (nodeActiveInfo[nodeCntActive].activeTiming == beatCnt);
     }
     public void activateNode(float activeTiming, float timing, int color, int generateMode, int targetTileNum = 0, int dir = 0)
     {
@@ -696,7 +709,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             }
 
             int pointTileNum = 0;
-            for (int i = 1; i <= 3; ++i) if (collide[i, 0] != 0) pointTileNum = collide[i, 0];
+            for (int i = 1; i <= 3; ++i) if (collide[i].tileNum != 0) pointTileNum = collide[i].tileNum;
 
             print(pointTileNum);
             print(tileCS[pointTileNum]);
