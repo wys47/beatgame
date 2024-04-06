@@ -12,7 +12,6 @@ public class NodeCS : Variables
     [HideInInspector] public int dir;
     [HideInInspector] public int targetTileNum;
     [HideInInspector] public int generateMode;
-    [HideInInspector] public int clickTileNum;
 
     private void Awake()
     {
@@ -51,7 +50,7 @@ public class NodeCS : Variables
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) / maxMapSize - (maxMapSize - line)) * PlusBeatInOneUpdate;
                     pairDir = 3;
-                    mapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum, clickTileNum);
+                    mapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 2)
                 {
@@ -79,7 +78,7 @@ public class NodeCS : Variables
                         pairDir = 4;
                     }
 
-                    mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].changeTileColorAndInfo(dir, false, color, targetTileNum, clickTileNum);
+                    mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 3)
                 {
@@ -107,7 +106,7 @@ public class NodeCS : Variables
                         pairDir = 1;
                     }
 
-                    mapCtrl.tileCS[line * maxMapSize + maxMapSize].changeTileColorAndInfo(dir, false, color, targetTileNum, clickTileNum);
+                    mapCtrl.tileCS[line * maxMapSize + maxMapSize].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 4)
                 {
@@ -127,7 +126,7 @@ public class NodeCS : Variables
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) % maxMapSize - (maxMapSize - line - 1)) * PlusBeatInOneUpdate;
                     pairDir = 2;
 
-                    mapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum, clickTileNum);
+                    mapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
 
                 if (!loop) break;
@@ -165,7 +164,7 @@ public class NodeCS : Variables
                     int genTileNum = 0;
                     if (dir != 0) genTileNum = line;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0, 0);
+                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 2)
                 {
@@ -184,7 +183,7 @@ public class NodeCS : Variables
                     int genTileNum = 0;
                     if (dir != 0) genTileNum = maxMapSize * (maxMapSize - 1) + line;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0, 0);
+                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 3)
                 {
@@ -203,7 +202,7 @@ public class NodeCS : Variables
                     int genTileNum = 0;
                     if (dir != 0) genTileNum = line * maxMapSize + maxMapSize;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0, 0);
+                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 4)
                 {
@@ -222,7 +221,7 @@ public class NodeCS : Variables
                     int genTileNum = 0;
                     if (dir != 0) genTileNum = line * maxMapSize + 1;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0, 0);
+                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
 
                 deActivate();

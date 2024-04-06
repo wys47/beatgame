@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ScoreBoardCS : MonoBehaviour
 {
@@ -11,8 +12,8 @@ public class ScoreBoardCS : MonoBehaviour
     private const int clickPoint = 300;
     private const int clickChainPoint = 200;
 
-    public TextMesh scoreText;
-    public TextMesh accuracyText;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI accuracyText;
 
     [HideInInspector] public int nodeCnt;
 
@@ -25,19 +26,6 @@ public class ScoreBoardCS : MonoBehaviour
     private int clickCnt;
     private int clickScoreTotal;
     [HideInInspector] public bool clickAll;
-
-    void OnEnable()
-    {
-        score = 0;
-        accuracy = 0;
-
-        tapCnt = 0;
-        tapScoreTotal = 0;
-        tapAll = true;
-        clickCnt = 0;
-        clickScoreTotal = 0;
-        clickAll = true;
-    }
 
     public void onPreTap()
     {
@@ -98,6 +86,9 @@ public class ScoreBoardCS : MonoBehaviour
 
     public void showScoreboard()
     {
-
+        scoreText.text = score.ToString();
+        print(nodeCnt);
+        accuracy = Mathf.Round(accuracy * 1000) / 10;
+        accuracyText.text = accuracy.ToString() + "%";
     }
 }

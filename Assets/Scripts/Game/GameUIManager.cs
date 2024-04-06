@@ -9,12 +9,14 @@ public class GameUIManager : MonoBehaviour
 
     void OnEnable()
     {
+        scoreBoardCSObj.SetActive(true);
+        scoreBoardCS.activate();
         scoreBoardCSObj.SetActive(false);
     }
 
     public void onMusicEnd()
     {
         scoreBoardCSObj.SetActive(true);
-        scoreBoardCS.activate();
+        scoreBoardCS.showScoreboard();
     }
 }

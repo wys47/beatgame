@@ -14,9 +14,9 @@ public class Tile : Variables
     private WaitForSeconds glowFadeTime = new WaitForSeconds(0.1f);
 
     [HideInInspector] public int[] tileColor = new int[maxNodeDir];
-    [HideInInspector] public int[,] tileNodeTargetTileNum = new int[maxNodeDir, 2];
+    [HideInInspector] public int[] tileNodeTargetTileNum = new int[maxNodeDir];
     private int[] tempColor = new int[maxNodeDir];
-    private int[,] tempNodeTargetTileNum = new int[maxNodeDir, 2];
+    private int[] tempNodeTargetTileNum = new int[maxNodeDir];
 
     private float[] colorRGB = new float[4];
     private int fadeCnt;
@@ -25,8 +25,8 @@ public class Tile : Variables
     {
         for (int i = 0; i < maxNodeDir; ++i)
         {
-            changeTileColorAndInfo(i, false, 0, 0, 0);
-            changeTileColorAndInfo(i, true, 0, 0, 0);
+            changeTileColorAndInfo(i, false, 0, 0);
+            changeTileColorAndInfo(i, true, 0, 0);
         }
 
         fadeCnt = -1;
@@ -65,23 +65,23 @@ public class Tile : Variables
             {
                 if (i == 1)
                 {
-                    if (tileNum + maxMapSize <= maxMapSize * maxMapSize) mapCtrl.tileCS[tileNum + maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i, 0], tileNodeTargetTileNum[i, 1]);
-                    changeTileColorAndInfo(i, false, 0, 0, 0);
+                    if (tileNum + maxMapSize <= maxMapSize * maxMapSize) mapCtrl.tileCS[tileNum + maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    changeTileColorAndInfo(i, false, 0, 0);
                 }
                 else if (i == 2)
                 {
-                    if (tileNum - maxMapSize >= 1) mapCtrl.tileCS[tileNum - maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i, 0], tileNodeTargetTileNum[i, 1]);
-                    changeTileColorAndInfo(i, false, 0, 0, 0);
+                    if (tileNum - maxMapSize >= 1) mapCtrl.tileCS[tileNum - maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    changeTileColorAndInfo(i, false, 0, 0);
                 }
                 else if (i == 3)
                 {
-                    if ((tileNum - 1) % maxMapSize - 1 >= 0) mapCtrl.tileCS[tileNum - 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i, 0], tileNodeTargetTileNum[i, 1]);
-                    changeTileColorAndInfo(i, false, 0, 0, 0);
+                    if ((tileNum - 1) % maxMapSize - 1 >= 0) mapCtrl.tileCS[tileNum - 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    changeTileColorAndInfo(i, false, 0, 0);
                 }
                 else if (i == 4)
                 {
-                    if ((tileNum - 1) % maxMapSize + 1 <= maxMapSize - 1) mapCtrl.tileCS[tileNum + 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i, 0], tileNodeTargetTileNum[i, 1]);
-                    changeTileColorAndInfo(i, false, 0, 0, 0);
+                    if ((tileNum - 1) % maxMapSize + 1 <= maxMapSize - 1) mapCtrl.tileCS[tileNum + 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    changeTileColorAndInfo(i, false, 0, 0);
                 }
             }
         }
@@ -92,8 +92,8 @@ public class Tile : Variables
         {
             if (tempColor[i] != 0)
             {
-                changeTileColorAndInfo(i, false, tempColor[i], tempNodeTargetTileNum[i, 0], tempNodeTargetTileNum[i, 1]);
-                changeTileColorAndInfo(i, true, 0, 0, 0);
+                changeTileColorAndInfo(i, false, tempColor[i], tempNodeTargetTileNum[i]);
+                changeTileColorAndInfo(i, true, 0, 0);
             }
         }
     }
@@ -137,19 +137,17 @@ public class Tile : Variables
         }
     }
 
-    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1, int clickTileNum = -1)
+    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1)
     {
         if (!isTemp)
         {
             if (color != -1) tileColor[dir] = color;
-            if (targetTileNumber != -1) tileNodeTargetTileNum[dir, 0] = targetTileNumber;
-            if (clickTileNum != -1) tileNodeTargetTileNum[dir, 1] = clickTileNum;
+            if (targetTileNumber != -1) tileNodeTargetTileNum[dir] = targetTileNumber;
         }
         else
         {
             if (color != -1) tempColor[dir] = color;
-            if (targetTileNumber != -1) tempNodeTargetTileNum[dir, 0] = targetTileNumber;
-            if (clickTileNum != -1) tempNodeTargetTileNum[dir, 1] = clickTileNum;
+            if (targetTileNumber != -1) tempNodeTargetTileNum[dir] = targetTileNumber;
         }
     }
 

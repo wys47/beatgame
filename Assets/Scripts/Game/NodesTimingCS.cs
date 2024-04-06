@@ -12,7 +12,7 @@ public class NodesTimingCS : Variables
     {
         "",
 
-        "0f,1.5f,4f,6f,8f,10f,12f,14f,15s,19f,21f,22f,23f,25f,26.5f,29q,30w,31w,32w,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
+        "0f,1.5f,4f,6f,8f,10f,12f,14f,15s,19q,20q,22w,24f,25f,26.5f,29q,30q,31q,32w,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
     };
     public struct nodesTimingDef
     {
@@ -50,8 +50,8 @@ public class NodesTimingCS : Variables
                         {
                             switch (ch)
                             {
-                                case 'q': nodesTiming[i, nodeCnt].eventNum = 1; break;
-                                case 'w': nodesTiming[i, nodeCnt].eventNum = 2; break;
+                                case 'q': nodesTiming[i, nodeCnt].eventNum = 1; break;//클릭 노드 생성
+                                case 'w': nodesTiming[i, nodeCnt].eventNum = 2; break;//클릭 노드 애니메이션
                                 case 'a': nodesTiming[i, nodeCnt].eventNum = 11; break;
                                 case 's': nodesTiming[i, nodeCnt].eventNum = 12; break;
                             }
