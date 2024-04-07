@@ -12,8 +12,16 @@ public class ScoreBoardCS : MonoBehaviour
     private const int clickPoint = 300;
     private const int clickChainPoint = 200;
 
+    public Image[] tile;
+    private Color black = new Color(0.4f, 0.4f, 0.4f, 1f);
+    public Image[] tileGlow;
+
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI accuracyText;
+
+    public AudioSource audioPlayer;
+    public AudioClip scoreCountSound;
+    public AudioClip scoreDifficaltySound;
 
     [HideInInspector] public int nodeCnt;
 
@@ -26,6 +34,8 @@ public class ScoreBoardCS : MonoBehaviour
     private int clickCnt;
     private int clickScoreTotal;
     [HideInInspector] public bool clickAll;
+
+    private WaitForSeconds[] waitForSeconds = { new WaitForSeconds(0.01f), new WaitForSeconds(0.5f), new WaitForSeconds(0.05f) };
 
     public void onPreTap()
     {
@@ -84,11 +94,59 @@ public class ScoreBoardCS : MonoBehaviour
         clickAll = true;
     }
 
-    public void showScoreboard()
+    public IEnumerator showScoreboard()
     {
-        scoreText.text = score.ToString();
-        print(nodeCnt);
+        for (int i = 1; i <= 4; ++i)
+        {
+            tile[i].color = black;
+            tileGlow[i].color = (i != 4 ? Color.white : Color.red) - Color.black;
+        }
+
+        scoreText.text = "0";
+        accuracyText.text = "0%";
+
+        audioPlayer.clip = scoreCountSound;
+        audioPlayer.pitch = 1;
+        audioPlayer.loop = true;
+        audioPlayer.Play();
+        for (int i = 0; i < score; i += 111)
+        {
+            yield return waitForSeconds[0];
+            if (i > score) i = score;
+            scoreText.text = i.ToString();
+        }
         accuracy = Mathf.Round(accuracy * 1000) / 10;
-        accuracyText.text = accuracy.ToString() + "%";
+        for (float f = 0; f < accuracy; f += 1.1f)
+        {
+            yield return waitForSeconds[0];
+            if (f > accuracy) f = accuracy;
+            f = Mathf.Round(f * 10) / 10;
+            accuracyText.text = f.ToString() + "%";
+        }
+        audioPlayer.Pause();
+
+        audioPlayer.clip = scoreDifficaltySound;
+        audioPlayer.pitch = 0.5f;
+        audioPlayer.loop = false;
+        for (int i = 1; i <= 4; ++i)
+        {
+
+            for (int k = 1; k <= 10; ++k)
+            {
+                yield return waitForSeconds[0];
+                if (i != 4) tile[i].color += Color.white * 0.06f;
+                else tile[i].color += Color.red * 0.06f - (Color.white - Color.red) * 0.04f;
+                tileGlow[i].color += Color.black * 0.1f;
+            }
+
+            audioPlayer.pitch += i != 4 ? 0.5f : 1f;
+            audioPlayer.Play();
+            yield return waitForSeconds[1];
+            for (int k = 1; k <= 10; ++k)
+            {
+                yield return waitForSeconds[2];
+                tileGlow[i].color = (i != 4 ? Color.white : Color.red) - Color.black * 0.1f * k;
+            }
+        }
     }
 }

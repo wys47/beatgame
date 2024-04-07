@@ -103,7 +103,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         ColorByCode[5] = new Color(0, 0.8f, 0, 1);
         ColorByCode[6] = new Color(0, 1, 0.8f, 1);
         ColorByCode[7] = new Color(0, 0.96f, 1, 1);
-        ColorByCode[8] = new Color(0, 0, 1, 1);
+        ColorByCode[8] = new Color(0, 0.3f, 1, 1);
         ColorByCode[9] = new Color(0.67f, 0, 1, 1);
         ColorByCode[10] = new Color(1, 0, 0.7f, 1);
         ColorByCode[maxColor + 1] = new Color(1, 1, 1, 1);
@@ -164,265 +164,13 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         }
         if (gameState == 2)
         {
-            if (afterBeatCntPlus)
-            {
-                for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].updateTileColor();
-
-                if (collide[0].tileNum != 0)
-                {
-                    gameUIManager.scoreBoardCS.onClickTiming(false);
-                    collide[0].tileNum = 0;
-                }
-
-                for (int i = 1; i <= 3; ++i)
-                {
-                    collide[i].tileNum = 0;
-
-                    if (collide[i].primeNodeRank == 2) gameUIManager.scoreBoardCS.onTapTiming(false);
-                    collide[i].primeNodeRank = 0;
-
-                    collide[i].dir = 0;
-                }
-
-                for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
-                {
-                    for (int k = 1; k < maxNodeDir; ++k)
-                    {
-                        if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0);
-
-                        int targetTileNum = tileCS[i].tileNodeTargetTileNum[k];
-                        if (targetTileNum == 0) continue;
-                        int zone = zoneByTileNum(targetTileNum);
-
-                        if (zone != 0)
-                        {
-                            if (k == 1)
-                            {
-                                int diff = targetTileNum - i;
-
-                                if (diff == maxMapSize)
-                                {
-                                    if (collide[zone].primeNodeRank == 0)
-                                    {
-                                        collide[zone].tileNum = i;
-                                        collide[zone].primeNodeRank = 1;
-                                        collide[zone].dir = k;
-                                    }
-                                }
-                                else if (diff == 0)
-                                {
-                                    collide[zone].tileNum = i;
-                                    collide[zone].primeNodeRank = 2;
-                                    collide[zone].dir = k;
-                                }
-                            }
-                            else if (k == 2)
-                            {
-                                int diff = i - targetTileNum;
-
-                                if (diff == maxMapSize)
-                                {
-                                    if (collide[zone].primeNodeRank == 0)
-                                    {
-                                        collide[zone].tileNum = i;
-                                        collide[zone].primeNodeRank = 1;
-                                        collide[zone].dir = k;
-                                    }
-                                }
-                                else if (diff == 0)
-                                {
-                                    collide[zone].tileNum = i;
-                                    collide[zone].primeNodeRank = 2;
-                                    collide[zone].dir = k;
-                                }
-                            }
-                            else if (k == 3)
-                            {
-                                int diff = i - targetTileNum;
-
-                                if (diff == 1)
-                                {
-                                    if (collide[zone].primeNodeRank == 0)
-                                    {
-                                        collide[zone].tileNum = i;
-                                        collide[zone].primeNodeRank = 1;
-                                        collide[zone].dir = k;
-                                    }
-                                }
-                                else if (diff == 0)
-                                {
-                                    collide[zone].tileNum = i;
-                                    collide[zone].primeNodeRank = 2;
-                                    collide[zone].dir = k;
-                                }
-                            }
-                            else if (k == 4)
-                            {
-                                int diff = targetTileNum - i;
-
-                                if (diff == 1)
-                                {
-                                    if (collide[zone].primeNodeRank == 0)
-                                    {
-                                        collide[zone].tileNum = i;
-                                        collide[zone].primeNodeRank = 1;
-                                        collide[zone].dir = k;
-                                    }
-                                }
-                                else if (diff == 0)
-                                {
-                                    collide[zone].tileNum = i;
-                                    collide[zone].primeNodeRank = 2;
-                                    collide[zone].dir = k;
-                                }
-                            }
-                        }
-                        else if (targetTileNum == i) collide[zone].tileNum = i;
-                    }
-                }
-
-                for (int i = 1; i <= 5; ++i)
-                {
-                    if (zoneActiveInfo[i].colorCode != 0)
-                    {
-                        if (zoneActiveInfo[i].timing != beatCnt)
-                        {
-                            if (!zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, true));
-                        }
-                        else
-                        {
-                            if (zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, false));
-                            zoneActiveInfo[i].colorCode = 0;
-                        }
-                    }
-                }
-
-                afterBeatCntPlus = false;
-
-                if (!musicPlayer.isPlaying) onMusicEnd();
-            }
+            if (afterBeatCntPlus) onAfterBeatCntPlus();
 
             float arc = beatSensor.eulerAngles.z;
-            if (arc > 360 - beatSensorRotateArc * 0.5f || arc <= beatSensorRotateArc * 0.5f || (arc > 180 - beatSensorRotateArc * 0.5f && arc <= 180 + beatSensorRotateArc * 0.5f))
-            {
-                beatCnt += PlusBeatInOneUpdate;
-                afterBeatCntPlus = true;
+            if (arc > 360 - beatSensorRotateArc * 0.5f || arc <= beatSensorRotateArc * 0.5f || (arc > 180 - beatSensorRotateArc * 0.5f && arc <= 180 + beatSensorRotateArc * 0.5f)) beatCntPlus();
 
-                if (makeMode == 0)
-                {
-                    for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTempTileColor(i);
-                    for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTileColorFromTemp();
-
-                    if (nodeActiveInfo[nodeCntActive].activeTiming == beatCnt) onNodeActiveTiming();
-
-                    for (int i = 1; i <= maxNode; ++i)
-                    {
-                        if (nodeCopys[i].activeSelf) nodeCS[i].beatCntUpdated(beatCnt);
-                    }
-                }
-                else
-                {
-                    if (makeMode == 1)
-                    {
-                        if (beatCnt % 1 == 0) playGameSound(gameSound[1]);
-                    }
-                    else if (makeMode == 2)
-                    {
-                        if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].timing == beatCnt)
-                        {
-                            playGameSound(gameSound[1]);
-                            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].eventNum != 0)
-                            {
-                                if (nodeCntActive >= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming || nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive + 1].timing - beatCnt > PlusBeatInOneUpdate * maxMapSize + maxMapAnimationPlayBeat) StartCoroutine(MapAnimation(nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].eventNum));
-                            }
-
-                            ++nodeCntActive;
-                        }
-                    }
-                }
-            }
-
-            int clickTileNum = collide[0].tileNum;
-            if (clickTileNum != 0)
-            {
-                if (Input.GetMouseButton(0))
-                {
-                    RaycastHit2D raycastHit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.forward, Vector3.forward, 2);
-                    if (raycastHit2D && int.Parse(raycastHit2D.collider.name) == clickTileNum)
-                    {
-                        StartCoroutine(tileCS[clickTileNum].glowImageSwitch(true, true));
-                        gameUIManager.scoreBoardCS.onClickTiming(true);
-
-                        int eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum;
-                        if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum == 2)
-                        {
-                            if (gameUIManager.scoreBoardCS.clickAll) StartCoroutine(MapAnimation(eventNum, clickTileNum));
-                            gameUIManager.scoreBoardCS.clickAll = true;
-                        }
-
-                        collide[0].tileNum = 0;
-                    }
-                }
-            }
-
-            bool clickSuccess = false;
-            if (collide[1].primeNodeRank != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.A))
-                {
-                    if (collide[1].primeNodeRank == 2)
-                    {
-                        StartCoroutine(tileCS[collide[1].tileNum].glowImageSwitch(true));
-                        gameUIManager.scoreBoardCS.onTapTiming(true);
-                        clickSuccess = true;
-                    }
-                    else gameUIManager.scoreBoardCS.onPreTap();
-
-                    tileCS[collide[1].tileNum].changeTileColorAndInfo(collide[1].dir, false, -1, 0);
-                    collide[1].primeNodeRank = 0;
-                }
-            }
-            if (collide[2].primeNodeRank != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.S))
-                {
-                    if (collide[2].primeNodeRank == 2)
-                    {
-                        StartCoroutine(tileCS[collide[2].tileNum].glowImageSwitch(true));
-                        gameUIManager.scoreBoardCS.onTapTiming(true);
-                        clickSuccess = true;
-                    }
-                    else gameUIManager.scoreBoardCS.onPreTap();
-
-                    tileCS[collide[2].tileNum].changeTileColorAndInfo(collide[2].dir, false, -1, 0);
-                    collide[2].primeNodeRank = 0;
-                }
-            }
-            if (collide[3].primeNodeRank != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.D))
-                {
-                    if (collide[3].primeNodeRank == 2)
-                    {
-                        StartCoroutine(tileCS[collide[3].tileNum].glowImageSwitch(true));
-                        gameUIManager.scoreBoardCS.onTapTiming(true);
-                        clickSuccess = true;
-                    }
-                    else gameUIManager.scoreBoardCS.onPreTap();
-
-                    tileCS[collide[3].tileNum].changeTileColorAndInfo(collide[3].dir, false, -1, 0);
-                    collide[3].primeNodeRank = 0;
-                }
-            }
-            if (clickSuccess)
-            {
-                int eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum;
-                if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum > 10)
-                {
-                    if (gameUIManager.scoreBoardCS.tapAll) StartCoroutine(MapAnimation(eventNum));
-                    gameUIManager.scoreBoardCS.tapAll = true;
-                }
-            }
+            clickTileCheck();
+            tapTileCheck();
 
             beatSensor.Rotate(0, 0, beatSensorRotateArc);
         }
@@ -490,6 +238,229 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         animationDelay[3] = new WaitForSeconds(0.05f);
     }
 
+    private void beatCntPlus()
+    {
+        beatCnt += PlusBeatInOneUpdate;
+        afterBeatCntPlus = true;
+
+        if (makeMode == 0)
+        {
+            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTempTileColor(i);
+            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTileColorFromTemp();
+
+            if (nodeActiveInfo[nodeCntActive].activeTiming == beatCnt) onNodeActiveTiming();
+
+            for (int i = 1; i <= maxNode; ++i)
+            {
+                if (nodeCopys[i].activeSelf) nodeCS[i].beatCntUpdated(beatCnt);
+            }
+        }
+        else
+        {
+            if (makeMode == 1)
+            {
+                if (beatCnt % 1 == 0) playGameSound(gameSound[1]);
+            }
+            else if (makeMode == 2)
+            {
+                if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].timing == beatCnt)
+                {
+                    playGameSound(gameSound[1]);
+                    if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].eventNum != 0)
+                    {
+                        if (nodeCntActive >= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming || nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive + 1].timing - beatCnt > PlusBeatInOneUpdate * maxMapSize + maxMapAnimationPlayBeat) StartCoroutine(MapAnimation(nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive].eventNum));
+                    }
+
+                    ++nodeCntActive;
+                }
+            }
+        }
+    }
+
+    private void clickTileCheck()
+    {
+        int clickTileNum = collide[0].tileNum;
+        if (clickTileNum != 0)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                RaycastHit2D raycastHit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.forward, Vector3.forward, 2);
+                if (raycastHit2D && int.Parse(raycastHit2D.collider.name) == clickTileNum)
+                {
+                    StartCoroutine(tileCS[clickTileNum].glowImageSwitch(true, true));
+                    gameUIManager.scoreBoardCS.onClickTiming(true);
+
+                    int eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum;
+                    if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum == 2)
+                    {
+                        if (gameUIManager.scoreBoardCS.clickAll) StartCoroutine(MapAnimation(eventNum, clickTileNum));
+                        gameUIManager.scoreBoardCS.clickAll = true;
+                    }
+
+                    collide[0].tileNum = 0;
+                }
+            }
+        }
+    }
+
+    private void tapTileCheck()
+    {
+        bool tapSuccess = false;
+        if (collide[1].primeNodeRank != 0)
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                if (collide[1].primeNodeRank == 2)
+                {
+                    StartCoroutine(tileCS[collide[1].tileNum].glowImageSwitch(true));
+                    gameUIManager.scoreBoardCS.onTapTiming(true);
+                    tapSuccess = true;
+                }
+                else gameUIManager.scoreBoardCS.onPreTap();
+
+                tileCS[collide[1].tileNum].changeTileColorAndInfo(collide[1].dir, false, -1, 0);
+                collide[1].primeNodeRank = 0;
+            }
+        }
+        if (collide[2].primeNodeRank != 0)
+        {
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                if (collide[2].primeNodeRank == 2)
+                {
+                    StartCoroutine(tileCS[collide[2].tileNum].glowImageSwitch(true));
+                    gameUIManager.scoreBoardCS.onTapTiming(true);
+                    tapSuccess = true;
+                }
+                else gameUIManager.scoreBoardCS.onPreTap();
+
+                tileCS[collide[2].tileNum].changeTileColorAndInfo(collide[2].dir, false, -1, 0);
+                collide[2].primeNodeRank = 0;
+            }
+        }
+        if (collide[3].primeNodeRank != 0)
+        {
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                if (collide[3].primeNodeRank == 2)
+                {
+                    StartCoroutine(tileCS[collide[3].tileNum].glowImageSwitch(true));
+                    gameUIManager.scoreBoardCS.onTapTiming(true);
+                    tapSuccess = true;
+                }
+                else gameUIManager.scoreBoardCS.onPreTap();
+
+                tileCS[collide[3].tileNum].changeTileColorAndInfo(collide[3].dir, false, -1, 0);
+                collide[3].primeNodeRank = 0;
+            }
+        }
+        if (tapSuccess)
+        {
+            int eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum;
+            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum > 10)
+            {
+                if (gameUIManager.scoreBoardCS.tapAll) StartCoroutine(MapAnimation(eventNum));
+                gameUIManager.scoreBoardCS.tapAll = true;
+            }
+        }
+    }
+
+    private void onAfterBeatCntPlus()
+    {
+        for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].updateTileColor();//타일 업데이트
+
+        if (collide[0].tileNum != 0)
+        {
+            gameUIManager.scoreBoardCS.onClickTiming(false);
+            collide[0].tileNum = 0;
+        }//클릭타일 클릭 실패
+
+        for (int i = 1; i <= 3; ++i)
+        {
+            collide[i].tileNum = 0;
+
+            if (collide[i].primeNodeRank == 2) gameUIManager.scoreBoardCS.onTapTiming(false);
+            collide[i].primeNodeRank = 0;
+
+            collide[i].dir = 0;
+        }//탭타일 탭 실패
+
+        for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
+        {
+            for (int k = 1; k < maxNodeDir; ++k)
+            {
+                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0);
+
+                int targetTileNum = tileCS[i].tileNodeTargetTileNum[k];
+                if (targetTileNum == 0) continue;
+                int zone = zoneByTileNum(targetTileNum);
+
+                if (zone != 0)
+                {
+                    if (k == 1)
+                    {
+                        int diff = targetTileNum - i;
+                        onAfterBeatCntPlus_1(diff, maxMapSize, zone, i, k);
+                    }
+                    else if (k == 2)
+                    {
+                        int diff = i - targetTileNum;
+                        onAfterBeatCntPlus_1(diff, maxMapSize, zone, i, k);
+                    }
+                    else if (k == 3)
+                    {
+                        int diff = i - targetTileNum;
+                        onAfterBeatCntPlus_1(diff, 1, zone, i, k);
+                    }
+                    else if (k == 4)
+                    {
+                        int diff = targetTileNum - i;
+                        onAfterBeatCntPlus_1(diff, 1, zone, i, k);
+                    }
+                }
+                else if (targetTileNum == i) collide[zone].tileNum = i;
+            }
+        }
+
+        for (int i = 1; i <= 5; ++i)
+        {
+            if (zoneActiveInfo[i].colorCode != 0)
+            {
+                if (zoneActiveInfo[i].timing != beatCnt)
+                {
+                    if (!zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, true));
+                }
+                else
+                {
+                    if (zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, false));
+                    zoneActiveInfo[i].colorCode = 0;
+                }
+            }
+        }
+
+        afterBeatCntPlus = false;
+
+        if (!musicPlayer.isPlaying) onMusicEnd();
+    }
+    private void onAfterBeatCntPlus_1(int diff, int comparison, int zone, int i, int k)
+    {
+        if (diff == comparison)
+        {
+            if (collide[zone].primeNodeRank == 0)
+            {
+                collide[zone].tileNum = i;
+                collide[zone].primeNodeRank = 1;
+                collide[zone].dir = k;
+            }
+        }
+        else if (diff == 0)
+        {
+            collide[zone].tileNum = i;
+            collide[zone].primeNodeRank = 2;
+            collide[zone].dir = k;
+        }
+    }
+
     private void onMusicEnd()
     {
         gameUIManager.onMusicEnd();
@@ -528,6 +499,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         }
         while (nodeActiveInfo[nodeCntActive].activeTiming == beatCnt);
     }
+
     public void activateNode(float activeTiming, float timing, int color, int generateMode, int targetTileNum = 0, int dir = 0)
     {
         if (nodeCycle == maxNode) nodeCycle = 1;
@@ -583,6 +555,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         else activateNode(activeTiming, timing, color, generateMode, targetTileNum, dir);
         return;
     }
+
     public int zoneByTileNum(int tileNum)
     {
         int zoneNum = 0;
@@ -596,6 +569,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
 
         return zoneNum;
     }
+
     private IEnumerator zoneFade(int zoneNum, int color, bool onOff)
     {
         if (onOff) zoneObj[zoneNum].SetActive(true);
@@ -617,6 +591,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         yield return sec;
         itsTime = 2;
     }
+
     IEnumerator MapAnimation(int animNum, int originTileNum = 0)
     {
         if (animNum == 2)
@@ -743,6 +718,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
             mapGlowObj.SetActive(false);
         }
     }
+
     void playGameSound(AudioClip clip)
     {
         for (int i = 1; i <= maxAudioPlayer; ++i)

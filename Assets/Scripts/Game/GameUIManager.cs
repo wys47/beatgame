@@ -17,6 +17,6 @@ public class GameUIManager : MonoBehaviour
     public void onMusicEnd()
     {
         scoreBoardCSObj.SetActive(true);
-        scoreBoardCS.showScoreboard();
+        StartCoroutine(scoreBoardCS.showScoreboard());
     }
 }
