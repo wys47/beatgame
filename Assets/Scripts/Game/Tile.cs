@@ -8,10 +8,13 @@ public class Tile : Variables
 
     public SpriteRenderer tileSprite;
     public Sprite[] tileImage = new Sprite[5];
+    public GameObject tapSuccessEffect;
+    public Animator anim;
     public GameObject glowObj;
     public SpriteRenderer glowImageRenderer;
 
     private WaitForSeconds glowFadeTime = new WaitForSeconds(0.1f);
+    private WaitUntil waitUntilAnimEnd;
 
     [HideInInspector] public int[] tileColor = new int[maxNodeDir];
     [HideInInspector] public int[] tileNodeTargetTileNum = new int[maxNodeDir];
@@ -20,6 +23,11 @@ public class Tile : Variables
 
     private float[] colorRGB = new float[4];
     private int fadeCnt;
+
+    private void Awake()
+    {
+        waitUntilAnimEnd = new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+    }
 
     public void OnEnable()
     {
@@ -149,6 +157,13 @@ public class Tile : Variables
             if (color != -1) tempColor[dir] = color;
             if (targetTileNumber != -1) tempNodeTargetTileNum[dir] = targetTileNumber;
         }
+    }
+
+    public IEnumerator ActivateTapSuccessEffect()
+    {
+        tapSuccessEffect.SetActive(true);
+        yield return waitUntilAnimEnd;
+        tapSuccessEffect.SetActive(false);
     }
 
     public IEnumerator glowImageSwitch(bool onOff, bool fade = false)

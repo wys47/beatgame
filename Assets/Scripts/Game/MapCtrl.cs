@@ -80,13 +80,14 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private int[] palette = new int[maxColor + 1];
     private int useColorCnt;
 
-    private struct collodeDef
+    private struct collideDef
     {
         public int tileNum;
+        public int collideTileNum;
         public int primeNodeRank;
         public int dir;
     }
-    private collodeDef[] collide = new collodeDef[4];
+    private collideDef[] collide = new collideDef[4];
 
     private int itsTime;
 
@@ -306,54 +307,33 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private void tapTileCheck()
     {
         bool tapSuccess = false;
-        if (collide[1].primeNodeRank != 0)
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                if (collide[1].primeNodeRank == 2)
-                {
-                    StartCoroutine(tileCS[collide[1].tileNum].glowImageSwitch(true));
-                    gameUIManager.scoreBoardCS.onTapTiming(true);
-                    tapSuccess = true;
-                }
-                else gameUIManager.scoreBoardCS.onPreTap();
 
-                tileCS[collide[1].tileNum].changeTileColorAndInfo(collide[1].dir, false, -1, 0);
-                collide[1].primeNodeRank = 0;
+        for (int i = 1; i <= 3; ++i)
+        {
+            KeyCode key = KeyCode.None;
+            if (i == 1) key = KeyCode.A;
+            else if (i == 2) key = KeyCode.S;
+            else if (i == 3) key = KeyCode.D;
+
+            if (collide[i].primeNodeRank != 0)
+            {
+                if (Input.GetKeyDown(key))
+                {
+                    if (collide[i].primeNodeRank == 2)
+                    {
+                        StartCoroutine(tileCS[collide[i].tileNum].glowImageSwitch(true));
+                        gameUIManager.scoreBoardCS.onTapTiming(true);
+                        tapSuccess = true;
+                    }
+                    else gameUIManager.scoreBoardCS.onPreTap();
+
+                    StartCoroutine(tileCS[collide[i].collideTileNum].ActivateTapSuccessEffect());
+                    tileCS[collide[i].tileNum].changeTileColorAndInfo(collide[i].dir, false, -1, 0);
+                    collide[i].primeNodeRank = 0;
+                }
             }
         }
-        if (collide[2].primeNodeRank != 0)
-        {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                if (collide[2].primeNodeRank == 2)
-                {
-                    StartCoroutine(tileCS[collide[2].tileNum].glowImageSwitch(true));
-                    gameUIManager.scoreBoardCS.onTapTiming(true);
-                    tapSuccess = true;
-                }
-                else gameUIManager.scoreBoardCS.onPreTap();
 
-                tileCS[collide[2].tileNum].changeTileColorAndInfo(collide[2].dir, false, -1, 0);
-                collide[2].primeNodeRank = 0;
-            }
-        }
-        if (collide[3].primeNodeRank != 0)
-        {
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                if (collide[3].primeNodeRank == 2)
-                {
-                    StartCoroutine(tileCS[collide[3].tileNum].glowImageSwitch(true));
-                    gameUIManager.scoreBoardCS.onTapTiming(true);
-                    tapSuccess = true;
-                }
-                else gameUIManager.scoreBoardCS.onPreTap();
-
-                tileCS[collide[3].tileNum].changeTileColorAndInfo(collide[3].dir, false, -1, 0);
-                collide[3].primeNodeRank = 0;
-            }
-        }
         if (tapSuccess)
         {
             int eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].eventNum;
@@ -400,22 +380,22 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     if (k == 1)
                     {
                         int diff = targetTileNum - i;
-                        onAfterBeatCntPlus_1(diff, maxMapSize, zone, i, k);
+                        onAfterBeatCntPlus_1(diff, maxMapSize, zone, targetTileNum, i, k);
                     }
                     else if (k == 2)
                     {
                         int diff = i - targetTileNum;
-                        onAfterBeatCntPlus_1(diff, maxMapSize, zone, i, k);
+                        onAfterBeatCntPlus_1(diff, maxMapSize, zone, targetTileNum, i, k);
                     }
                     else if (k == 3)
                     {
                         int diff = i - targetTileNum;
-                        onAfterBeatCntPlus_1(diff, 1, zone, i, k);
+                        onAfterBeatCntPlus_1(diff, 1, zone, targetTileNum, i, k);
                     }
                     else if (k == 4)
                     {
                         int diff = targetTileNum - i;
-                        onAfterBeatCntPlus_1(diff, 1, zone, i, k);
+                        onAfterBeatCntPlus_1(diff, 1, zone, targetTileNum, i, k);
                     }
                 }
                 else if (targetTileNum == i) collide[zone].tileNum = i;
@@ -442,13 +422,14 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
         if (!musicPlayer.isPlaying) onMusicEnd();
     }
-    private void onAfterBeatCntPlus_1(int diff, int comparison, int zone, int i, int k)
+    private void onAfterBeatCntPlus_1(int diff, int comparison, int zone, int targetTileNum, int i, int k)
     {
         if (diff == comparison)
         {
             if (collide[zone].primeNodeRank == 0)
             {
                 collide[zone].tileNum = i;
+                collide[zone].collideTileNum = targetTileNum;
                 collide[zone].primeNodeRank = 1;
                 collide[zone].dir = k;
             }
@@ -456,6 +437,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         else if (diff == 0)
         {
             collide[zone].tileNum = i;
+            collide[zone].collideTileNum = targetTileNum;
             collide[zone].primeNodeRank = 2;
             collide[zone].dir = k;
         }
