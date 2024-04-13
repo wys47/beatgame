@@ -28,13 +28,13 @@ public class SliderCS : MonoBehaviour
         switch (valueType)
         {
             case 0:
-                settingCS.ChangeVolume(0, value);
+                settingCS.changeVolume(0, value);
                 break;
             case 1:
-                settingCS.ChangeVolume(1, value);
+                settingCS.changeVolume(1, value);
                 break;
             case 2:
-                settingCS.ChangeVolume(2, value);
+                settingCS.changeVolume(2, value);
                 break;
         }
     }

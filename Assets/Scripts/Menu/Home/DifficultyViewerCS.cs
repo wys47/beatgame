@@ -8,7 +8,9 @@ public class DifficultyViewerCS : MonoBehaviour
     public Image[] image;
     private Color[,] color = new Color[5, 2]; 
 
-    private int difficulty;
+    [HideInInspector] public int difficulty;
+
+    public GameObject[] info;
 
     void Awake()
     {
@@ -29,6 +31,7 @@ public class DifficultyViewerCS : MonoBehaviour
     {
         difficulty = 1;
         ChangeDifficulty();
+        for (int i = 1; i <= 4; ++i) info[i].SetActive(false);
     }
 
     private void ChangeDifficulty()
@@ -44,5 +47,14 @@ public class DifficultyViewerCS : MonoBehaviour
     {
         difficulty = n;
         ChangeDifficulty();
+    }
+
+    public void onPointerEnter(int i)
+    {
+        info[i].SetActive(true);
+    }
+    public void onPointerExit(int i)
+    {
+        info[i].SetActive(false);
     }
 }

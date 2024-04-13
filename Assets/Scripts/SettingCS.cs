@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class SettingCS : MonoBehaviour
+public class SettingCS : Variables
 {
-    [HideInInspector] public float sinc = -0.25f;
+    public GameObject[] set;
+    private int currentSet;
+    private const int maxSet = 2;
+
+    [HideInInspector] public float sinc;
+    public TextMeshProUGUI sincText;
 
     [HideInInspector] public float[] volume = new float[3];//0.마스터1.게임2.메뉴
     public AudioSource[] audios;
@@ -12,6 +18,11 @@ public class SettingCS : MonoBehaviour
 
     void OnEnable()
     {
+        currentSet = 1;
+
+        sinc = 0;
+        sincText.text = "0";
+
         volume[0] = 0.5f;
         volume[1] = sliderCS[1].value = 0.5f;
         volume[2] = sliderCS[2].value = 0.5f;
@@ -21,7 +32,7 @@ public class SettingCS : MonoBehaviour
         audios[3].volume = 0.25f;
     }
 
-    public void ChangeVolume(int n, float value)
+    public void changeVolume(int n, float value)
     {
         if (n == 0)
         {
@@ -51,6 +62,29 @@ public class SettingCS : MonoBehaviour
             volume[2] = volume[0] * value;
             audios[2].volume = volume[2];
             audios[3].volume = volume[2];
+        }
+    }
+
+    public void changeSinc(int plusOrMinus)
+    {
+        sinc += plusOrMinus * PlusBeatInOneUpdate;
+
+        string sign = "";
+        if (sinc > 0) sign = "+";
+
+        sincText.text = sign + sinc.ToString();
+    }
+
+    public void onLeftOrRightButtonClicked(int plusOrMinus)
+    {
+        currentSet += plusOrMinus;
+        if (currentSet > maxSet) currentSet = 1;
+        else if (currentSet == 0) currentSet = maxSet;
+
+        for (int i = 1; i <= maxSet; ++i)
+        {
+            if (i == currentSet) set[i].SetActive(true);
+            else set[i].SetActive(false);
         }
     }
 }

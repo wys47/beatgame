@@ -10,6 +10,7 @@ public class NodeCS : Variables
     [HideInInspector] public float timing;
     [HideInInspector] public int color;
     [HideInInspector] public int dir;
+    [HideInInspector] public int targetZone;
     [HideInInspector] public int targetTileNum;
     [HideInInspector] public int generateMode;
 
@@ -31,7 +32,10 @@ public class NodeCS : Variables
             while (true)
             {
                 loop = false;
-                dir = Random.Range(1, 5);
+                if (targetZone == 0) dir = Random.Range(1, 5);
+                else if (targetZone == 1) dir = 1;
+                else if (targetZone == 2) dir = 2;//2번째의 경우만 예외처리함
+                else if (targetZone == 3) dir = 4;
 
                 if (dir == 1)
                 {
@@ -54,7 +58,7 @@ public class NodeCS : Variables
                 }
                 else if (dir == 2)
                 {
-                    targetTileNum = Random.Range(maxMapSize * (maxMapSize - diff) + maxMapSize - diff + 1, maxMapSize * (maxMapSize - diff) + diff);
+                    targetTileNum = Random.Range(maxMapSize * (maxMapSize - diff) + maxMapSize - diff + 1, maxMapSize * (maxMapSize - diff) + (targetZone == 2 ? (int)(maxMapSize * 0.5f) + 1 : diff));
                     int line = (targetTileNum - 1) % maxMapSize + 1;
 
                     if (mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].tileColor[dir] != 0) loop = true;

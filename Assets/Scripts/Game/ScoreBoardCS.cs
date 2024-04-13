@@ -37,14 +37,16 @@ public class ScoreBoardCS : MonoBehaviour
 
     private WaitForSeconds[] waitForSeconds = { new WaitForSeconds(0.01f), new WaitForSeconds(0.5f), new WaitForSeconds(0.05f) };
 
-    public void onPreTap()
+    public DifficultyViewerCS difficultyViewerCS;
+
+    public void onCommonTap()
     {
         score += preTapPoint;
         tapCnt = 0;
         tapScoreTotal = 0;
         tapAll = false;
 
-        accuracy += 0.5f / nodeCnt;
+        accuracy += 0.5f;
     }
     public void onTapTiming(bool success)
     {
@@ -54,7 +56,7 @@ public class ScoreBoardCS : MonoBehaviour
             ++tapCnt;
             tapScoreTotal += perfectTapPoint + tapChainPoint * tapCnt;
 
-            accuracy += (float)1 / nodeCnt;
+            ++accuracy;
         }
         else
         {
@@ -71,7 +73,7 @@ public class ScoreBoardCS : MonoBehaviour
             ++clickCnt;
             clickScoreTotal += clickPoint + clickChainPoint * clickCnt;
 
-            accuracy += (float)1 / nodeCnt;
+            ++accuracy;
         }
         else
         {
@@ -115,7 +117,8 @@ public class ScoreBoardCS : MonoBehaviour
             if (i > score) i = score;
             scoreText.text = i.ToString();
         }
-        accuracy = Mathf.Round(accuracy * 1000) / 10;
+
+        accuracy = Mathf.Round(accuracy / nodeCnt * 1000) / 10;
         for (float f = 0; f < accuracy; f += 1.1f)
         {
             yield return waitForSeconds[0];
@@ -123,29 +126,34 @@ public class ScoreBoardCS : MonoBehaviour
             f = Mathf.Round(f * 10) / 10;
             accuracyText.text = f.ToString() + "%";
         }
+        yield return waitForSeconds[0];
+        accuracyText.text = accuracy.ToString() + "%";
         audioPlayer.Pause();
 
         audioPlayer.clip = scoreDifficaltySound;
         audioPlayer.pitch = 0.5f;
         audioPlayer.loop = false;
-        for (int i = 1; i <= 4; ++i)
+
+        if (accuracy == 100)
         {
-
-            for (int k = 1; k <= 10; ++k)
+            for (int i = 1; i <= difficultyViewerCS.difficulty; ++i)
             {
-                yield return waitForSeconds[0];
-                if (i != 4) tile[i].color += Color.white * 0.06f;
-                else tile[i].color += Color.red * 0.06f - (Color.white - Color.red) * 0.04f;
-                tileGlow[i].color += Color.black * 0.1f;
-            }
+                for (int k = 1; k <= 10; ++k)
+                {
+                    yield return waitForSeconds[0];
+                    if (i != 4) tile[i].color += Color.white * 0.06f;
+                    else tile[i].color += Color.red * 0.06f - (Color.white - Color.red) * 0.04f;
+                    tileGlow[i].color += Color.black * 0.1f;
+                }
 
-            audioPlayer.pitch += i != 4 ? 0.5f : 1f;
-            audioPlayer.Play();
-            yield return waitForSeconds[1];
-            for (int k = 1; k <= 10; ++k)
-            {
-                yield return waitForSeconds[2];
-                tileGlow[i].color = (i != 4 ? Color.white : Color.red) - Color.black * 0.1f * k;
+                audioPlayer.pitch += i != 4 ? 0.5f : 1f;
+                audioPlayer.Play();
+                yield return waitForSeconds[1];
+                for (int k = 1; k <= 10; ++k)
+                {
+                    yield return waitForSeconds[2];
+                    tileGlow[i].color = (i != 4 ? Color.white : Color.red) - Color.black * 0.1f * k;
+                }
             }
         }
     }

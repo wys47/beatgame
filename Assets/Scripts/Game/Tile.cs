@@ -14,6 +14,7 @@ public class Tile : Variables
     public SpriteRenderer glowImageRenderer;
 
     private WaitForSeconds glowFadeTime = new WaitForSeconds(0.1f);
+    private WaitForSeconds waitForSec = new WaitForSeconds(0.01f);
     private WaitUntil waitUntilAnimEnd;
 
     [HideInInspector] public int[] tileColor = new int[maxNodeDir];
@@ -162,6 +163,7 @@ public class Tile : Variables
     public IEnumerator ActivateTapSuccessEffect()
     {
         tapSuccessEffect.SetActive(true);
+        anim.Play("tap_success_anim", -1, 0f);
         yield return waitUntilAnimEnd;
         tapSuccessEffect.SetActive(false);
     }
