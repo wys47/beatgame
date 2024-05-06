@@ -6568,6 +6568,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f83628add6f71645a75770f66c6e89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventNumClickNodeRange: 0100000002000000
+  eventNumPositionedNodeRange: 0300000005000000
+  eventNumChainNodeRange: 0b0000000d000000
+  eventNumChainNodeGenerateCnt: 0400000008000000
+  eventNumGlobalNodeRange: 1500000016000000
+  eventNumGlobalAnim: 1500000016000000
   ColorByCode:
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
@@ -7274,6 +7280,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca15e57bb0df5bb4282842507aa94127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventNumClickNodeRange: 0100000002000000
+  eventNumPositionedNodeRange: 0300000005000000
+  eventNumChainNodeRange: 0b0000000d000000
+  eventNumChainNodeGenerateCnt: 0400000008000000
+  eventNumGlobalNodeRange: 1500000016000000
+  eventNumGlobalAnim: 1500000016000000
   settingCS: {fileID: 1973790745}
 --- !u!1 &1100659882
 GameObject:
@@ -9702,7 +9714,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1628451525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9735,7 +9747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.2627451}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11725,6 +11737,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6dcacdedce46a942b972458e1234a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventNumClickNodeRange: 0100000002000000
+  eventNumPositionedNodeRange: 0300000005000000
+  eventNumChainNodeRange: 0b0000000d000000
+  eventNumChainNodeGenerateCnt: 0400000008000000
+  eventNumGlobalNodeRange: 1500000016000000
+  eventNumGlobalAnim: 1500000016000000
   set:
   - {fileID: 0}
   - {fileID: 1329699804}

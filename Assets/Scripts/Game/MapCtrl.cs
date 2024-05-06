@@ -62,7 +62,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     public Transform beatSensor;
 
-    private bool AIPlay = true;
+    private bool AIPlay = false;
 
     //°ÔÀÓ°ü¸®¿ë º¯¼ö
     private int currentPlayingTrack;
@@ -210,15 +210,15 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     {
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming + 1; ++i) nodeActiveInfo[i].activeTiming = PlusBeatInOneUpdate * 0.5f;
 
-        //¿¬¼ÓÅ¸ÀÏ ¼ýÀÚ ·£´ý ºÎ¿©
-        int[] chainTapTileEventNum = { 0, 0, 0, 0, 0, 0 };
+        //À§Ä¡ ÁöÁ¤ ³ëµå ¼ýÀÚ ·£´ý ºÎ¿©
+        int[] positionedNodeEventNum = { 0, 0, 0, 0, 0, 0 };
         int n = 3;
-        chainTapTileEventNum[Random.Range(3, 6)] = n;
+        positionedNodeEventNum[Random.Range(eventNumPositionedNodeRange[0], eventNumPositionedNodeRange[1] + 1)] = n;
         bool upOrDown = Random.Range(0, 2) == 0;
         for (int i = upOrDown ? 3 : 5; upOrDown ? i <= 5 : i >= 3; i += upOrDown ? 1 : -1)
         {
-            if (chainTapTileEventNum[i] != 0) continue;
-            else chainTapTileEventNum[i] = ++n;
+            if (positionedNodeEventNum[i] != 0) continue;
+            else positionedNodeEventNum[i] = ++n;
         }
 
         gameUIManager.scoreBoardCS.nodeCnt = nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming;
@@ -226,11 +226,11 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++i)
         {
             nodeActiveInfo[i].eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum;
-            if (difficultyViewerCS.difficulty <= 2 && (nodeActiveInfo[i].eventNum == 1 || nodeActiveInfo[i].eventNum == 2)) nodeActiveInfo[i].eventNum = 0;
+            if (difficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) nodeActiveInfo[i].eventNum = 0;
 
-            float activeTiming = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - (nodeActiveInfo[i].eventNum != 1 && nodeActiveInfo[i].eventNum != 2 ? Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize) : 8) * PlusBeatInOneUpdate;
+            float activeTiming = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - (nodeActiveInfo[i].eventNum < eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum > eventNumClickNodeRange[1] ? Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize) : 8) * PlusBeatInOneUpdate;
 
-            if (nodeActiveInfo[i].eventNum >= 3 && nodeActiveInfo[i].eventNum <= 5) nodeActiveInfo[i].eventNum = chainTapTileEventNum[nodeActiveInfo[i].eventNum];
+            if (nodeActiveInfo[i].eventNum >= eventNumPositionedNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumPositionedNodeRange[1]) nodeActiveInfo[i].eventNum = positionedNodeEventNum[nodeActiveInfo[i].eventNum];
 
             for (int k = 1; k <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++k)
             {
@@ -313,7 +313,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     gameUIManager.scoreBoardCS.onClickTiming(true);
 
                     int eventNum = nodeActiveInfo[nodeCntActive - 1].eventNum;
-                    if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum == 2)
+                    if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum == eventNumClickNodeAnim)
                     {
                         if (gameUIManager.scoreBoardCS.clickAll) StartCoroutine(MapAnimation(eventNum, clickTileNum));
                         gameUIManager.scoreBoardCS.clickAll = true;
@@ -368,7 +368,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         if (tapSuccess)
         {
             int eventNum = nodeActiveInfo[nodeCntActive - 1].eventNum;
-            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum > 10)
+            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum >= eventNumGlobalNodeRange[0] && eventNum <= eventNumGlobalNodeRange[1])
             {
                 if (gameUIManager.scoreBoardCS.tapAll) StartCoroutine(MapAnimation(eventNum));
                 gameUIManager.scoreBoardCS.tapAll = true;
@@ -432,22 +432,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 else if (targetTileNum == i) collide[zone].tileNum = i;
             }
         }
-
-        if (difficultyViewerCS.difficulty <= 3)
+        for (int i = difficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
         {
-            for (int i = 1; i <= 5; ++i)
+            if (zoneActiveInfo[i].colorCode != 0)
             {
-                if (zoneActiveInfo[i].colorCode != 0)
+                if (zoneActiveInfo[i].timing != beatCnt)
                 {
-                    if (zoneActiveInfo[i].timing != beatCnt)
-                    {
-                        if (!zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, true));
-                    }
-                    else
-                    {
-                        if (zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, false));
-                        zoneActiveInfo[i].colorCode = 0;
-                    }
+                    if (!zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, true));
+                }
+                else
+                {
+                    if (zoneObj[i].activeSelf) StartCoroutine(zoneFade(i, zoneActiveInfo[i].colorCode, false));
+                    zoneActiveInfo[i].colorCode = 0;
                 }
             }
         }
@@ -540,7 +536,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             {
                 int eventNum = nodeActiveInfo[nodeCntActive - 1].eventNum;
 
-                if (eventNum == 1 || eventNum == 2)
+                if (eventNum >= eventNumClickNodeRange[0] && eventNum <= eventNumClickNodeRange[1])
                 {
                     int dir_ = 1 + 3 * Random.Range(0, 2);
                     int genTileNum;
@@ -568,7 +564,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
                     tileCS[genTileNum].changeTileColorAndInfo(dir_, false, maxColor + 1, targetTileNum_);
                 }
-                else if (eventNum >= 3 && eventNum <= 5)
+                else if (eventNum >= eventNumChainNodeRange[0] && eventNum <= eventNumChainNodeRange[1])
+                {
+                    tileCS[5].changeTileColorAndInfo(1, false, maxColor + 1, 37);
+                    tileCS[33].changeTileColorAndInfo(4, false, maxColor + 1, 37);
+                }
+                else if (eventNum >= eventNumPositionedNodeRange[0] && eventNum <= eventNumPositionedNodeRange[1])
                 {
                     node.targetZone = eventNum - 2;
                     node.generate();

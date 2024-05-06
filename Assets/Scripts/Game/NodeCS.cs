@@ -27,7 +27,7 @@ public class NodeCS : Variables
 
             int diff = (int)((timing - (ActivatedTiming - PlusBeatInOneUpdate)) / PlusBeatInOneUpdate);
             float pairActiveTiming = 0;
-            int pairDir = 0;
+            int pairDir = Random.Range(1, 11);
 
             while (true)
             {
@@ -53,7 +53,7 @@ public class NodeCS : Variables
                     }
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) / maxMapSize - (maxMapSize - line)) * PlusBeatInOneUpdate;
-                    pairDir = 3;
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 3;
                     mapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 2)
@@ -74,12 +74,12 @@ public class NodeCS : Variables
                     if (line <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - (maxMapSize - line + 1)) * PlusBeatInOneUpdate;
-                        pairDir = 3;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 3;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - line) * PlusBeatInOneUpdate;
-                        pairDir = 4;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 4;
                     }
 
                     mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].changeTileColorAndInfo(dir, false, color, targetTileNum);
@@ -102,12 +102,12 @@ public class NodeCS : Variables
                     if (line + 1 <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (maxMapSize - line)) * PlusBeatInOneUpdate;
-                        pairDir = 2;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 2;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (line + 1)) * PlusBeatInOneUpdate;
-                        pairDir = 1;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 1;
                     }
 
                     mapCtrl.tileCS[line * maxMapSize + maxMapSize].changeTileColorAndInfo(dir, false, color, targetTileNum);
@@ -128,7 +128,7 @@ public class NodeCS : Variables
                     }
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) % maxMapSize - (maxMapSize - line - 1)) * PlusBeatInOneUpdate;
-                    pairDir = 2;
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 2;
 
                     mapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
@@ -165,7 +165,7 @@ public class NodeCS : Variables
                         }
                     }
 
-                    int genTileNum = 0;
+                    int genTileNum;
                     if (dir != 0) genTileNum = line;
                     else genTileNum = targetTileNum;
                     mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
@@ -184,7 +184,7 @@ public class NodeCS : Variables
                         }
                     }
 
-                    int genTileNum = 0;
+                    int genTileNum;
                     if (dir != 0) genTileNum = maxMapSize * (maxMapSize - 1) + line;
                     else genTileNum = targetTileNum;
                     mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
@@ -203,7 +203,7 @@ public class NodeCS : Variables
                         }
                     }
 
-                    int genTileNum = 0;
+                    int genTileNum;
                     if (dir != 0) genTileNum = line * maxMapSize + maxMapSize;
                     else genTileNum = targetTileNum;
                     mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
@@ -222,9 +222,15 @@ public class NodeCS : Variables
                         }
                     }
 
-                    int genTileNum = 0;
+                    int genTileNum;
                     if (dir != 0) genTileNum = line * maxMapSize + 1;
                     else genTileNum = targetTileNum;
+                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
+                }
+                else if (dir == 0)
+                {
+                    int genTileNum;
+                    genTileNum = targetTileNum;
                     mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
 

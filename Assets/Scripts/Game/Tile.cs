@@ -19,8 +19,10 @@ public class Tile : Variables
 
     [HideInInspector] public int[] tileColor = new int[maxNodeDir];
     [HideInInspector] public int[] tileNodeTargetTileNum = new int[maxNodeDir];
+    private int[] tileMaxFadeCnt = new int[maxNodeDir];
     private int[] tempColor = new int[maxNodeDir];
     private int[] tempNodeTargetTileNum = new int[maxNodeDir];
+    private int[] tempTileMaxFadeCnt = new int[maxNodeDir];
 
     private float[] colorRGB = new float[4];
     private int fadeCnt;
@@ -131,7 +133,7 @@ public class Tile : Variables
         }
         else if (fadeCnt != -1)
         {
-            if (fadeCnt < 5)
+            if (fadeCnt < maxFadeCnt)
             {
                 tileSprite.color = new Color(tileSprite.color.r * 0.7f, tileSprite.color.g * 0.7f, tileSprite.color.b * 0.7f, 1);
                 if (glowObj.activeSelf) glowImageRenderer.color = tileSprite.color + Color.black * (glowImageRenderer.color.a * 0.8f - 1);
@@ -146,17 +148,19 @@ public class Tile : Variables
         }
     }
 
-    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1)
+    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1, int maxFade = -1)
     {
         if (!isTemp)
         {
             if (color != -1) tileColor[dir] = color;
             if (targetTileNumber != -1) tileNodeTargetTileNum[dir] = targetTileNumber;
+            if (maxFade != -1) tileMaxFadeCnt[dir] = maxFade;
         }
         else
         {
             if (color != -1) tempColor[dir] = color;
             if (targetTileNumber != -1) tempNodeTargetTileNum[dir] = targetTileNumber;
+            if (maxFade != -1) tempTileMaxFadeCnt[dir] = maxFade;
         }
     }
 
