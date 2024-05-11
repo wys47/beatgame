@@ -10,8 +10,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private const float maxMapAnimationPlayBeat = 1;
 
     //°ÔÀÓ ¼öÄ¡ º¯¼ö
-    [HideInInspector]
-    public Color[] ColorByCode = new Color[maxColor + 2];
+    [HideInInspector] public static Color[] ColorByCode = new Color[maxColor + 2];
     private const float zoneAlpha = 0.7f;
 
     //UI
@@ -39,7 +38,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     //°ÔÀÓ ÄÄÆ÷³ÍÆ®
     public Transform tilesHolder;
     public GameObject tileObj;
-    [HideInInspector] public Tile[] tileCS = new Tile[maxMapSize * maxMapSize + 1];
+    [HideInInspector] public static Tile[] tileCS = new Tile[maxMapSize * maxMapSize + 1];
 
     public GameObject[] zoneObj;
     private SpriteRenderer[] zoneSprites = new SpriteRenderer[6];
@@ -52,8 +51,10 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private WaitForSeconds zoneFadeTime = new WaitForSeconds(0.05f);
 
     public GameObject mapGlowObj;
-    private SpriteRenderer mapGlowSprite;
+
     private WaitForSeconds[] animationDelay = new WaitForSeconds[4];
+    private WaitUntil animationDelayCondition;
+    private float conditionBeatCnt;
 
     public Transform nodesHolder;
     public GameObject nodeObj;
@@ -62,14 +63,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     public Transform beatSensor;
 
-    private bool AIPlay = false;
-
     //°ÔÀÓ°ü¸®¿ë º¯¼ö
     private int currentPlayingTrack;
-
     private int gameState;
     [HideInInspector] public float beatCnt;
     private bool afterBeatCntPlus;
+    private bool AIPlay = false;
 
     private struct nodeActiveInfoDef
     {
@@ -79,6 +78,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     }
     private nodeActiveInfoDef[] nodeActiveInfo = new nodeActiveInfoDef[maxTiming];
     private int nodeCntActive;
+    private float chainNodeActiveUntil;
     private int nodeCycle;
 
     private int[] palette = new int[maxColor + 1];
@@ -121,8 +121,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 GameObject tile = Instantiate(tileObj, tilesHolder);
                 tile.transform.position = new Vector2(x * 0.7f - 0.25f - maxMapSize * 0.35f, y * 0.7f - 0.25f - maxMapSize * 0.35f);
                 tileCS[(y - 1) * maxMapSize + x] = tile.GetComponent<Tile>();
-                tileCS[(y - 1) * maxMapSize + x].mapCtrl = gameObject.GetComponent<MapCtrl>();
-                tileCS[(y - 1) * maxMapSize + x].OnGenerate((y - 1) * maxMapSize + x);
+                tileCS[(y - 1) * maxMapSize + x].onGenerate((y - 1) * maxMapSize + x);
             }
         }
         for (int i = 0; i <= 5; ++i)
@@ -130,7 +129,6 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             zoneSprites[i] = zoneObj[i].GetComponent<SpriteRenderer>();
             zoneObj[i].SetActive(false);
         }
-        mapGlowSprite = mapGlowObj.GetComponent<SpriteRenderer>();
         tilesHolder.Rotate(0, 0, 45);
 
         for (int i = 1; i <= musicManager.musicCnt; ++i)
@@ -177,6 +175,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
             clickTileCheck();
             tapTileCheck();
+            chainTileCheck();
 
             beatSensor.Rotate(0, 0, beatSensorRotateArc);
         }
@@ -195,8 +194,11 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
         collide[0].tileNum = 0;
 
+        afterBeatCntPlus = false;
+
         nodeCycle = 0;
         nodeCntActive = 1;
+        chainNodeActiveUntil = 0;
 
         itsTime = 0;
 
@@ -228,7 +230,11 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             nodeActiveInfo[i].eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum;
             if (difficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) nodeActiveInfo[i].eventNum = 0;
 
-            float activeTiming = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - (nodeActiveInfo[i].eventNum < eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum > eventNumClickNodeRange[1] ? Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize) : 8) * PlusBeatInOneUpdate;
+            float minusTiming =  Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize);
+            if (nodeActiveInfo[i].eventNum < eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum > eventNumClickNodeRange[1]) minusTiming = 8;
+            else if (nodeActiveInfo[i].eventNum < eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum > eventNumChainNodeRange[1]) minusTiming = 4;
+
+            float activeTiming = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - minusTiming * PlusBeatInOneUpdate;
 
             if (nodeActiveInfo[i].eventNum >= eventNumPositionedNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumPositionedNodeRange[1]) nodeActiveInfo[i].eventNum = positionedNodeEventNum[nodeActiveInfo[i].eventNum];
 
@@ -254,10 +260,29 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             }
         }
 
+        float currActiveTiming = 0;
+        int first = 0;
+        for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++i)
+        {
+            if (currActiveTiming < nodeActiveInfo[i].activeTiming)
+            {
+                currActiveTiming = nodeActiveInfo[i].activeTiming;
+                first = i;
+            }
+            else if (nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])
+            {
+                nodeActiveInfoDef chainNodeInfo = nodeActiveInfo[i];
+                for (int k = i; k >= first + 1; --k) nodeActiveInfo[k] = nodeActiveInfo[k - 1];
+                nodeActiveInfo[first] = chainNodeInfo;
+            }
+        }
+
         animationDelay[0] = new WaitForSeconds(0);
         animationDelay[1] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / 4 * 0.9f);
         animationDelay[2] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / 15 * 0.9f);
         animationDelay[3] = new WaitForSeconds(0.05f);
+
+        animationDelayCondition = new WaitUntil(() => beatCnt == conditionBeatCnt);
     }
 
     private void beatCntPlus()
@@ -304,7 +329,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         int clickTileNum = collide[0].tileNum;
         if (clickTileNum != 0)
         {
-            if (Input.GetMouseButton(0) || AIPlay)
+            if (Input.GetMouseButtonUp(0) || AIPlay)
             {
                 RaycastHit2D raycastHit2D = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition) - Vector3.forward, Vector3.forward, 2);
                 if ((raycastHit2D && int.Parse(raycastHit2D.collider.name) == clickTileNum) || AIPlay)
@@ -312,8 +337,8 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     StartCoroutine(tileCS[clickTileNum].glowImageSwitch(true, true));
                     gameUIManager.scoreBoardCS.onClickTiming(true);
 
-                    int eventNum = nodeActiveInfo[nodeCntActive - 1].eventNum;
-                    if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum == eventNumClickNodeAnim)
+                    int eventNum = (int)findActivatedNodeByBeatCnt(nodeCntActive - 1, beatCnt, 2);
+                    if (eventNum == eventNumClickNodeAnim)
                     {
                         if (gameUIManager.scoreBoardCS.clickAll) StartCoroutine(MapAnimation(eventNum, clickTileNum));
                         gameUIManager.scoreBoardCS.clickAll = true;
@@ -367,13 +392,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
         if (tapSuccess)
         {
-            int eventNum = nodeActiveInfo[nodeCntActive - 1].eventNum;
-            if (nodesTimingCS.nodesTiming[currentPlayingTrack, nodeCntActive - 1].timing == beatCnt && eventNum >= eventNumGlobalNodeRange[0] && eventNum <= eventNumGlobalNodeRange[1])
+            int eventNum = (int)findActivatedNodeByBeatCnt(nodeCntActive - 1, beatCnt, 2);
+            if (eventNum >= eventNumGlobalNodeRange1[0] && eventNum <= eventNumGlobalNodeRange1[1])
             {
                 if (gameUIManager.scoreBoardCS.tapAll) StartCoroutine(MapAnimation(eventNum));
                 gameUIManager.scoreBoardCS.tapAll = true;
             }
         }
+    }
+
+    private void chainTileCheck()
+    {
+
     }
 
     private void onAfterBeatCntPlus()
@@ -400,7 +430,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         {
             for (int k = 1; k < maxNodeDir; ++k)
             {
-                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].changeTileColorAndInfo(0, false, 0, 0);
+                if (tileCS[i].tileColor[0] == tileCS[i].tileColor[k]) tileCS[i].tileColorAndInfoToDefualt(0, false);
 
                 int targetTileNum = tileCS[i].tileNodeTargetTileNum[k];
                 if (targetTileNum == 0) continue;
@@ -429,9 +459,21 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                         onAfterBeatCntPlus_1(diff, 1, zone, targetTileNum, i, k);
                     }
                 }
-                else if (targetTileNum == i) collide[zone].tileNum = i;
+                else if (targetTileNum == i)
+                {
+                    if (i == eventChainNodeCollideTileNum)
+                    {
+                        tileCS[i].tileColorAndInfoToDefualt(1, false);
+                        tileCS[i].tileColorAndInfoToDefualt(4, false);
+                        chainNodeActiveUntil *= -1;
+                    }
+                    else collide[zone].tileNum = i;
+                }
             }
         }
+
+
+
         for (int i = difficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
         {
             if (zoneActiveInfo[i].colorCode != 0)
@@ -447,7 +489,6 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 }
             }
         }
-
         afterBeatCntPlus = false;
 
         if (!musicPlayer.isPlaying) onMusicEnd();
@@ -566,8 +607,9 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 }
                 else if (eventNum >= eventNumChainNodeRange[0] && eventNum <= eventNumChainNodeRange[1])
                 {
-                    tileCS[5].changeTileColorAndInfo(1, false, maxColor + 1, 37);
-                    tileCS[33].changeTileColorAndInfo(4, false, maxColor + 1, 37);
+                    tileCS[5].changeTileColorAndInfo(1, false, maxColor + 1, eventChainNodeCollideTileNum);
+                    tileCS[33].changeTileColorAndInfo(4, false, maxColor + 1, eventChainNodeCollideTileNum);
+                    chainNodeActiveUntil = -
                 }
                 else if (eventNum >= eventNumPositionedNodeRange[0] && eventNum <= eventNumPositionedNodeRange[1])
                 {
@@ -579,6 +621,33 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         }
         else activateNode(activeTiming, timing, color, generateMode, targetTileNum, dir);
         return;
+    }
+
+    private float findActivatedNodeByBeatCnt(int nodeCnt, float currBeatCnt, int returnType)
+    {
+        for (int i = nodeCnt; i >= 1; --i)
+        {
+            if (nodeActiveInfo[i].timing == currBeatCnt)
+            {
+                if (returnType == 1) return nodeActiveInfo[i].activeTiming;
+                else if (returnType == 2) return nodeActiveInfo[i].eventNum;
+            }
+        }
+
+        return -1;
+    }
+    private float findActivatedNodeByEventNum(int nodeCnt, int minEventNum, int maxEventNum, int returnType)
+    {
+        for (int i = nodeCnt; i >= 1; --i)
+        {
+            if (nodeActiveInfo[i].eventNum >= minEventNum && nodeActiveInfo[i].eventNum <= maxEventNum)
+            {
+                if (returnType == 1) return nodeActiveInfo[i].activeTiming;
+                else if (returnType == 2) return nodeActiveInfo[i].eventNum;
+            }
+        }
+
+        return -1;
     }
 
     public int zoneByTileNum(int tileNum)
@@ -627,13 +696,13 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     IEnumerator MapAnimation(int animNum, int originTileNum = 0)
     {
-        if (animNum == 2)
+        if (animNum == eventNumClickNodeAnim)
         {
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
                 if (zoneByTileNum(i) == 0)
                 {
-                    tileCS[i].changeTileColorAndInfo(0, false, 0);
+                    tileCS[i].tileColorAndInfoToDefualt(0, false);
                     tileCS[i].updateTileColor();
                 }
             }
@@ -667,17 +736,40 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 yield return animationDelay[3];
             }
 
-            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) if (zoneByTileNum(i) == 0) tileCS[i].changeTileColorAndInfo(0, false, 0);
+            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) if (zoneByTileNum(i) == 0) tileCS[i].tileColorAndInfoToDefualt(0, false);
             zoneObj[0].SetActive(false);
         }
-        else if (animNum == 11)
+        else if (animNum == eventNumChainNodeRange[0])
+        {
+            yield return animationDelayCondition;
+            conditionBeatCnt = beatCnt + PlusBeatInOneUpdate;
+
+            for (int i = 1; i <= eventNumChainNodeGenerate[1]; ++i)
+            {
+                for (int k = 1; k <= i; ++k)
+                {
+                    tileCS[originTileNum + (i - 1) * maxMapSize + k - 1].changeTileColorAndInfo(0, false, maxColor + 1);
+                    tileCS[originTileNum + (k - 1) * maxMapSize + i - 1].changeTileColorAndInfo(0, false, maxColor + 1);
+                }
+                yield return animationDelayCondition;
+            }
+        }
+        else if (animNum == eventNumChainNodeRange[0] + 1)
+        {
+
+        }
+        else if (animNum == eventNumChainNodeRange[0] + 2)
+        {
+
+        }
+        else if (animNum == eventNumGlobalAnim1[1])
         {
             for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
 
             mapGlowObj.SetActive(true);
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
-                for (int k = 0; k < maxNodeDir; ++k) tileCS[i].changeTileColorAndInfo(k, false, 0, 0);
+                for (int k = 0; k < maxNodeDir; ++k) tileCS[i].tileColorAndInfoToDefualt(k, false);
                 tileCS[i].glowObj.SetActive(false);
                 tileCS[i].updateTileColor();
             }
@@ -700,17 +792,17 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 yield return animationDelay[1];
             }
 
-            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTileColorAndInfo(0, false, 0);
+            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].tileColorAndInfoToDefualt(0, false);
             mapGlowObj.SetActive(false);
         }
-        else if (animNum == 12 && makeMode == 0)
+        else if (animNum == eventNumGlobalAnim1[2])
         {
             for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
 
             mapGlowObj.SetActive(true);
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
-                for (int k = 0; k < maxNodeDir; ++k) tileCS[i].changeTileColorAndInfo(k, false, 0, 0);
+                for (int k = 0; k < maxNodeDir; ++k) tileCS[i].tileColorAndInfoToDefualt(k, false);
                 tileCS[i].glowObj.SetActive(false);
                 tileCS[i].updateTileColor();
             }
@@ -718,8 +810,6 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             int pointTileNum = 0;
             for (int i = 1; i <= 3; ++i) if (collide[i].tileNum != 0) pointTileNum = collide[i].tileNum;
 
-            print(pointTileNum);
-            print(tileCS[pointTileNum]);
             tileCS[pointTileNum].changeTileColorAndInfo(0, false, maxColor + 1);
             tileCS[pointTileNum].updateTileColor();
             yield return animationDelay[2];
@@ -747,7 +837,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 yield return animationDelay[2];
             }
 
-            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].changeTileColorAndInfo(0, false, 0);
+            for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].tileColorAndInfoToDefualt(0, false);
             mapGlowObj.SetActive(false);
         }
     }

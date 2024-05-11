@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Tile : Variables
 {
-    [HideInInspector] public MapCtrl mapCtrl;
-
     public SpriteRenderer tileSprite;
     public Sprite[] tileImage = new Sprite[5];
     public GameObject tapSuccessEffect;
@@ -19,10 +17,10 @@ public class Tile : Variables
 
     [HideInInspector] public int[] tileColor = new int[maxNodeDir];
     [HideInInspector] public int[] tileNodeTargetTileNum = new int[maxNodeDir];
-    private int[] tileMaxFadeCnt = new int[maxNodeDir];
+    private bool[] tileEndNodeOnTargetTile = new bool[maxNodeDir];
     private int[] tempColor = new int[maxNodeDir];
     private int[] tempNodeTargetTileNum = new int[maxNodeDir];
-    private int[] tempTileMaxFadeCnt = new int[maxNodeDir];
+    private bool[] tempEndNodeOnTargetTile = new bool[maxNodeDir];
 
     private float[] colorRGB = new float[4];
     private int fadeCnt;
@@ -36,14 +34,14 @@ public class Tile : Variables
     {
         for (int i = 0; i < maxNodeDir; ++i)
         {
-            changeTileColorAndInfo(i, false, 0, 0);
-            changeTileColorAndInfo(i, true, 0, 0);
+            tileColorAndInfoToDefualt(i, false);
+            tileColorAndInfoToDefualt(i, true);
         }
 
         fadeCnt = -1;
     }
 
-    public void OnGenerate(int tileNum)
+    public void onGenerate(int tileNum)
     {
         gameObject.name = tileNum.ToString();
         if (tileNum == 28)
@@ -61,7 +59,7 @@ public class Tile : Variables
             tileSprite.sprite = tileImage[3];
             transform.Translate(new Vector2(-0.03f, 0.03f));
         }
-        else if (tileNum == 37)
+        else if (tileNum == eventChainNodeCollideTileNum)
         {
             tileSprite.sprite = tileImage[4];
             transform.Translate(new Vector2(0.03f, 0.03f));
@@ -76,23 +74,23 @@ public class Tile : Variables
             {
                 if (i == 1)
                 {
-                    if (tileNum + maxMapSize <= maxMapSize * maxMapSize) mapCtrl.tileCS[tileNum + maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
-                    changeTileColorAndInfo(i, false, 0, 0);
+                    if (tileNum + maxMapSize <= maxMapSize * maxMapSize) MapCtrl.tileCS[tileNum + maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    tileColorAndInfoToDefualt(i, false);
                 }
                 else if (i == 2)
                 {
-                    if (tileNum - maxMapSize >= 1) mapCtrl.tileCS[tileNum - maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
-                    changeTileColorAndInfo(i, false, 0, 0);
+                    if (tileNum - maxMapSize >= 1) MapCtrl.tileCS[tileNum - maxMapSize].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    tileColorAndInfoToDefualt(i, false);
                 }
                 else if (i == 3)
                 {
-                    if ((tileNum - 1) % maxMapSize - 1 >= 0) mapCtrl.tileCS[tileNum - 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
-                    changeTileColorAndInfo(i, false, 0, 0);
+                    if ((tileNum - 1) % maxMapSize - 1 >= 0) MapCtrl.tileCS[tileNum - 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    tileColorAndInfoToDefualt(i, false);
                 }
                 else if (i == 4)
                 {
-                    if ((tileNum - 1) % maxMapSize + 1 <= maxMapSize - 1) mapCtrl.tileCS[tileNum + 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
-                    changeTileColorAndInfo(i, false, 0, 0);
+                    if ((tileNum - 1) % maxMapSize + 1 <= maxMapSize - 1) MapCtrl.tileCS[tileNum + 1].changeTileColorAndInfo(i, true, tileColor[i], tileNodeTargetTileNum[i]);
+                    tileColorAndInfoToDefualt(i, false);
                 }
             }
         }
@@ -103,8 +101,7 @@ public class Tile : Variables
         {
             if (tempColor[i] != 0)
             {
-                changeTileColorAndInfo(i, false, tempColor[i], tempNodeTargetTileNum[i]);
-                changeTileColorAndInfo(i, true, 0, 0);
+                giveTileColorAndInfo(i, true, this, false, this);
             }
         }
     }
@@ -118,9 +115,9 @@ public class Tile : Variables
         {
             if (tileColor[i] != 0)
             {
-                colorRGB[1] += mapCtrl.ColorByCode[tileColor[i]].r;
-                colorRGB[2] += mapCtrl.ColorByCode[tileColor[i]].g;
-                colorRGB[3] += mapCtrl.ColorByCode[tileColor[i]].b;
+                colorRGB[1] += MapCtrl.ColorByCode[tileColor[i]].r;
+                colorRGB[2] += MapCtrl.ColorByCode[tileColor[i]].g;
+                colorRGB[3] += MapCtrl.ColorByCode[tileColor[i]].b;
 
                 ++cnt;
             }
@@ -141,26 +138,50 @@ public class Tile : Variables
             }
             else
             {
-                tileSprite.color = mapCtrl.ColorByCode[0];
+                tileSprite.color = MapCtrl.ColorByCode[0];
                 StartCoroutine(glowImageSwitch(false));
                 fadeCnt = -1;
             }
         }
     }
 
-    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1, int maxFade = -1)
+    public void tileColorAndInfoToDefualt(int dir, bool isTemp)
+    {
+        if (!isTemp)
+        {
+            tileColor[dir] = 0;
+            tileNodeTargetTileNum[dir] = 0;
+            tileEndNodeOnTargetTile[dir] = false;
+        }
+        else
+        {
+            tempColor[dir] = 0;
+            tempNodeTargetTileNum[dir] = 0;
+            tempEndNodeOnTargetTile[dir] = false;
+        }
+    }
+    public static void giveTileColorAndInfo(int dir, bool isFromTemp, Tile from, bool isToTemp, Tile to)
+    {
+        int color = isFromTemp ? from.tempColor[dir] : from.tileColor[dir];
+        int targetTileNumber = isFromTemp ? from.tempNodeTargetTileNum[dir] : from.tileNodeTargetTileNum[dir];
+        bool endNodeOnTargetTile = isFromTemp ? from.tempEndNodeOnTargetTile[dir] : from.tileEndNodeOnTargetTile[dir];
+
+        to.changeTileColorAndInfo(dir, isToTemp, color, targetTileNumber, endNodeOnTargetTile ? 1 : 0);
+        from.tileColorAndInfoToDefualt(dir, isFromTemp);
+    }
+    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1, int endNodeOnTargetTile = -1)
     {
         if (!isTemp)
         {
             if (color != -1) tileColor[dir] = color;
             if (targetTileNumber != -1) tileNodeTargetTileNum[dir] = targetTileNumber;
-            if (maxFade != -1) tileMaxFadeCnt[dir] = maxFade;
+            if (endNodeOnTargetTile != -1) tileEndNodeOnTargetTile[dir] = endNodeOnTargetTile == 1 ? true : false;
         }
         else
         {
             if (color != -1) tempColor[dir] = color;
             if (targetTileNumber != -1) tempNodeTargetTileNum[dir] = targetTileNumber;
-            if (maxFade != -1) tempTileMaxFadeCnt[dir] = maxFade;
+            if (endNodeOnTargetTile != -1) tempEndNodeOnTargetTile[dir] = endNodeOnTargetTile == 1 ? true : false;
         }
     }
 
@@ -189,6 +210,6 @@ public class Tile : Variables
                 StartCoroutine(glowImageSwitch(false));
             }
         }
-        else glowImageRenderer.color = mapCtrl.ColorByCode[0];
+        else glowImageRenderer.color = MapCtrl.ColorByCode[0];
     }
 }

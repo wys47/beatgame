@@ -8,11 +8,11 @@ public class NodesTimingCS : Variables
 
     private static int maxSong = 1;
 
-    private string[] nodeInString = new string[2]
+    private string[] nodeInString =
     {
         "",
 
-        "4x,6x,8x,10c,12c,14c,15c,19z,20z,22z,24s,25f,26.5f,29i,30q,31q,32w,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
+        "4x,6x,8x,10c,12c,14c,15c,19z,20z,22z,24s,25f,26.5f,29p,30q,31q,32w,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
     };
     public struct nodesTimingDef
     {
@@ -61,8 +61,8 @@ public class NodesTimingCS : Variables
                                 case 'o': nodesTiming[i, nodeCnt].eventNum = eventNumChainNodeRange[0] + 1; break;//연속 노드 생성
                                 case 'i': nodesTiming[i, nodeCnt].eventNum = eventNumChainNodeRange[0] + 2; break;//연속 노드 생성
 
-                                case 'a': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange[0]; break;//맵 전체 애니메이션
-                                case 's': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange[0] + 1; break;//맵 전체 애니메이션
+                                case 'a': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange1[0]; break;//맵 전체 애니메이션
+                                case 's': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange1[0] + 1; break;//맵 전체 애니메이션
                             }
                         }
 

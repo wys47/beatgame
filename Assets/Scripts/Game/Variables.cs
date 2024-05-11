@@ -5,24 +5,25 @@ using UnityEngine;
 public class Variables : MonoBehaviour
 {
     //게임의 주요 수치
-    [HideInInspector] public const int maxTiming = 1000;
-    [HideInInspector] public const int maxMapSize = 8;
-    [HideInInspector] public const float PlusBeatInOneUpdate = 0.25f;
-    [HideInInspector] public const int maxNodeDir = 5;
-    [HideInInspector] public const int maxColor = 10;
-    [HideInInspector] public const int maxFadeCnt = 5;
-    [HideInInspector] public const float unpairTapNodeGeneratePosibility = 0.3f;
+    protected const int maxTiming = 1000;
+    protected const int maxMapSize = 8;
+    protected const float PlusBeatInOneUpdate = 0.25f;
+    protected const int maxNodeDir = 5;
+    protected const int maxColor = 10;
+    protected const int maxFadeCnt = 5;
+    protected const float unpairTapNodeGeneratePosibility = 0.3f;
 
     //이벤트 숫자
-    [HideInInspector] public int[] eventNumClickNodeRange = new int[2] { 1, 2 };
-    [HideInInspector] public const int eventNumClickNodeGenerate = 1;
-    [HideInInspector] public const int eventNumClickNodeAnim = 2;
+    protected int[] eventNumClickNodeRange = { 1, 2 };
+    protected const int eventNumClickNodeGenerate = 1;
+    protected const int eventNumClickNodeAnim = 2;
 
-    [HideInInspector] public int[] eventNumPositionedNodeRange = new int[2] { 3, 5 };
+    protected int[] eventNumPositionedNodeRange = { 3, 5 };
 
-    [HideInInspector] public int[] eventNumChainNodeRange = new int[2] { 11, 13 };
-    [HideInInspector] public int[] eventNumChainNodeGenerateCnt = new int[2] { 4, 8 };
+    protected int[] eventNumChainNodeRange = { 11, 13 };
+    protected int[] eventNumChainNodeGenerate = { 0, 4, 6, 8 };
+    protected const int eventChainNodeCollideTileNum = 37;
 
-    [HideInInspector] public int[] eventNumGlobalNodeRange = new int[2] { 21, 22 };
-    [HideInInspector] public int[] eventNumGlobalAnim = new int[2] { 21, 22 };
+    protected int[] eventNumGlobalNodeRange1 = { 21, 22 };
+    protected int[] eventNumGlobalAnim1 = { 0, 21, 22 };
 }

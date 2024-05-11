@@ -42,10 +42,10 @@ public class NodeCS : Variables
                     targetTileNum = Random.Range(maxMapSize * (diff - 1) + maxMapSize - diff + 1, maxMapSize * (diff - 1) + (int)(maxMapSize * 0.5f) + 1);
                     int line = (targetTileNum - 1) % maxMapSize + 1;
 
-                    if (mapCtrl.tileCS[line].tileColor[dir] != 0) loop = true;
+                    if (MapCtrl.tileCS[line].tileColor[dir] != 0) loop = true;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[2] != 0 && mapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[0] != 0)
+                        if (MapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[2] != 0 && MapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[0] != 0)
                         {
                             loop = true;
                             break;
@@ -53,18 +53,21 @@ public class NodeCS : Variables
                     }
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) / maxMapSize - (maxMapSize - line)) * PlusBeatInOneUpdate;
-                    if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 3;
-                    mapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum);
+
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 0;
+                    else pairDir = 3;
+
+                    MapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 2)
                 {
                     targetTileNum = Random.Range(maxMapSize * (maxMapSize - diff) + maxMapSize - diff + 1, maxMapSize * (maxMapSize - diff) + (targetZone == 2 ? (int)(maxMapSize * 0.5f) + 1 : diff));
                     int line = (targetTileNum - 1) % maxMapSize + 1;
 
-                    if (mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].tileColor[dir] != 0) loop = true;
+                    if (MapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].tileColor[dir] != 0) loop = true;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[1] != 0 && mapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[0] != 0)
+                        if (MapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[1] != 0 && MapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[0] != 0)
                         {
                             loop = true;
                             break;
@@ -74,25 +77,27 @@ public class NodeCS : Variables
                     if (line <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - (maxMapSize - line + 1)) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 3;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 0;
+                        else pairDir = 3;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - line) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 4;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 0;
+                        else pairDir = 4;
                     }
 
-                    mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].changeTileColorAndInfo(dir, false, color, targetTileNum);
+                    MapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 3)
                 {
                     targetTileNum = maxMapSize * Random.Range(maxMapSize - diff, diff - 1) + maxMapSize - diff + 1;
                     int line = (targetTileNum - 1) / maxMapSize;
 
-                    if (mapCtrl.tileCS[line * maxMapSize + maxMapSize].tileColor[dir] != 0) loop = true;
+                    if (MapCtrl.tileCS[line * maxMapSize + maxMapSize].tileColor[dir] != 0) loop = true;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[line * maxMapSize + i].tileColor[4] != 0 && mapCtrl.tileCS[line * maxMapSize + i].tileColor[0] != 0)
+                        if (MapCtrl.tileCS[line * maxMapSize + i].tileColor[4] != 0 && MapCtrl.tileCS[line * maxMapSize + i].tileColor[0] != 0)
                         {
                             loop = true;
                             break;
@@ -102,25 +107,27 @@ public class NodeCS : Variables
                     if (line + 1 <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (maxMapSize - line)) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 2;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 0;
+                        else pairDir = 2;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (line + 1)) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 1;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 0;
+                        else pairDir = 1;
                     }
 
-                    mapCtrl.tileCS[line * maxMapSize + maxMapSize].changeTileColorAndInfo(dir, false, color, targetTileNum);
+                    MapCtrl.tileCS[line * maxMapSize + maxMapSize].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
                 else if (dir == 4)
                 {
                     targetTileNum = maxMapSize * Random.Range(maxMapSize - diff, (int)(maxMapSize * 0.5f)) + diff;
                     int line = (targetTileNum - 1) / maxMapSize;
 
-                    if (mapCtrl.tileCS[line * maxMapSize + 1].tileColor[dir] != 0) loop = true;
+                    if (MapCtrl.tileCS[line * maxMapSize + 1].tileColor[dir] != 0) loop = true;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[line * maxMapSize + i].tileColor[3] != 0 && mapCtrl.tileCS[line * maxMapSize + i].tileColor[0] != 0)
+                        if (MapCtrl.tileCS[line * maxMapSize + i].tileColor[3] != 0 && MapCtrl.tileCS[line * maxMapSize + i].tileColor[0] != 0)
                         {
                             loop = true;
                             break;
@@ -128,9 +135,10 @@ public class NodeCS : Variables
                     }
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) % maxMapSize - (maxMapSize - line - 1)) * PlusBeatInOneUpdate;
-                    if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 2;
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10) pairDir = 0;
+                    else pairDir = 2;
 
-                    mapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum);
+                    MapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
 
                 if (!loop) break;
@@ -155,10 +163,10 @@ public class NodeCS : Variables
                 {
                     int line = (targetTileNum - 1) % maxMapSize + 1;
 
-                    if (mapCtrl.tileCS[line].tileColor[dir] != 0) dir = 0;
+                    if (MapCtrl.tileCS[line].tileColor[dir] != 0) dir = 0;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[2] != 0)
+                        if (MapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[2] != 0)
                         {
                             dir = 0;
                             break;
@@ -168,16 +176,16 @@ public class NodeCS : Variables
                     int genTileNum;
                     if (dir != 0) genTileNum = line;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
+                    MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 2)
                 {
                     int line = (targetTileNum - 1) % maxMapSize + 1;
 
-                    if (mapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].tileColor[dir] != 0) dir = 0;
+                    if (MapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].tileColor[dir] != 0) dir = 0;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[1] != 0)
+                        if (MapCtrl.tileCS[maxMapSize * (i - 1) + line].tileColor[1] != 0)
                         {
                             dir = 0;
                             break;
@@ -187,16 +195,16 @@ public class NodeCS : Variables
                     int genTileNum;
                     if (dir != 0) genTileNum = maxMapSize * (maxMapSize - 1) + line;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
+                    MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 3)
                 {
                     int line = (targetTileNum - 1) / maxMapSize;
 
-                    if (mapCtrl.tileCS[line * maxMapSize + maxMapSize].tileColor[dir] != 0) dir = 0;
+                    if (MapCtrl.tileCS[line * maxMapSize + maxMapSize].tileColor[dir] != 0) dir = 0;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[line * maxMapSize + i].tileColor[4] != 0)
+                        if (MapCtrl.tileCS[line * maxMapSize + i].tileColor[4] != 0)
                         {
                             dir = 0;
                             break;
@@ -206,16 +214,16 @@ public class NodeCS : Variables
                     int genTileNum;
                     if (dir != 0) genTileNum = line * maxMapSize + maxMapSize;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
+                    MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 4)
                 {
                     int line = (targetTileNum - 1) / maxMapSize;
 
-                    if (mapCtrl.tileCS[line * maxMapSize + 1].tileColor[dir] != 0) dir = 0;
+                    if (MapCtrl.tileCS[line * maxMapSize + 1].tileColor[dir] != 0) dir = 0;
                     for (int i = 1; i <= maxMapSize; ++i)
                     {
-                        if (mapCtrl.tileCS[line * maxMapSize + i].tileColor[3] != 0)
+                        if (MapCtrl.tileCS[line * maxMapSize + i].tileColor[3] != 0)
                         {
                             dir = 0;
                             break;
@@ -225,13 +233,13 @@ public class NodeCS : Variables
                     int genTileNum;
                     if (dir != 0) genTileNum = line * maxMapSize + 1;
                     else genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
+                    MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 0)
                 {
                     int genTileNum;
                     genTileNum = targetTileNum;
-                    mapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
+                    MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
 
                 deActivate();
