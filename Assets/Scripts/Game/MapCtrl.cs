@@ -78,8 +78,10 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     }
     private nodeActiveInfoDef[] nodeActiveInfo = new nodeActiveInfoDef[maxTiming];
     private int nodeCntActive;
-    private float chainNodeActiveUntil;
     private int nodeCycle;
+    private float chainNodeActiveUntil;
+    private float chainNodeCntBeatCnt;
+    private bool chainNodeAnimActive;
 
     private int[] palette = new int[maxColor + 1];
     private int useColorCnt;
@@ -199,6 +201,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         nodeCycle = 0;
         nodeCntActive = 1;
         chainNodeActiveUntil = 0;
+        chainNodeCntBeatCnt = 0;
 
         itsTime = 0;
 
@@ -231,8 +234,8 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             if (difficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) nodeActiveInfo[i].eventNum = 0;
 
             float minusTiming =  Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize);
-            if (nodeActiveInfo[i].eventNum < eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum > eventNumClickNodeRange[1]) minusTiming = 8;
-            else if (nodeActiveInfo[i].eventNum < eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum > eventNumChainNodeRange[1]) minusTiming = 4;
+            if (nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) minusTiming = 8;
+            else if (nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1]) minusTiming = 5;
 
             float activeTiming = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - minusTiming * PlusBeatInOneUpdate;
 
@@ -403,7 +406,26 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     private void chainTileCheck()
     {
-
+        if (beatCnt > 0)
+        {
+            if (beatCnt < chainNodeActiveUntil)
+            {
+                if (Input.GetMouseButtonDown(0)) chainNodeCntBeatCnt = beatCnt;
+                if (Input.GetMouseButtonUp(0)) chainTilePointCnt();
+                if (!chainNodeAnimActive)
+                {
+                    StartCoroutine(MapAnimation((int)findActivatedNodeByEventNum(nodeCntActive - 1, eventNumChainNodeRange[0], eventNumChainNodeRange[1], 2), eventChainNodeCollideTileNum));
+                    chainNodeAnimActive = true;
+                }
+            }
+            else if (chainNodeActiveUntil > 0) chainTilePointCnt();
+        }
+    }
+    private void chainTilePointCnt()
+    {
+        int point = (int)((chainNodeCntBeatCnt > 0 ? beatCnt - chainNodeCntBeatCnt : 0) / PlusBeatInOneUpdate);
+        chainNodeCntBeatCnt = 0;
+        chainNodeActiveUntil = 0;
     }
 
     private void onAfterBeatCntPlus()
@@ -466,13 +488,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                         tileCS[i].tileColorAndInfoToDefualt(1, false);
                         tileCS[i].tileColorAndInfoToDefualt(4, false);
                         chainNodeActiveUntil *= -1;
+                        chainNodeAnimActive = false;
                     }
                     else collide[zone].tileNum = i;
                 }
             }
         }
-
-
 
         for (int i = difficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
         {
@@ -609,7 +630,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                 {
                     tileCS[5].changeTileColorAndInfo(1, false, maxColor + 1, eventChainNodeCollideTileNum);
                     tileCS[33].changeTileColorAndInfo(4, false, maxColor + 1, eventChainNodeCollideTileNum);
-                    chainNodeActiveUntil = -
+                    chainNodeActiveUntil = -(beatCnt + (maxMapSize * 0.5f + eventNumChainNodeGenerate[eventNum - eventNumChainNodeRange[0] + 1]) * PlusBeatInOneUpdate);
                 }
                 else if (eventNum >= eventNumPositionedNodeRange[0] && eventNum <= eventNumPositionedNodeRange[1])
                 {
@@ -702,14 +723,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             {
                 if (zoneByTileNum(i) == 0)
                 {
-                    tileCS[i].tileColorAndInfoToDefualt(0, false);
-                    tileCS[i].updateTileColor();
+                    tileCS[i].tileColorAndInfoToDefualt(0, false, true);
                 }
             }
 
             zoneObj[0].SetActive(true);
-            tileCS[originTileNum].changeTileColorAndInfo(0, false, maxColor + 1);
-            tileCS[originTileNum].updateTileColor();
+            tileCS[originTileNum].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
 
             yield return animationDelay[3];
 
@@ -727,8 +746,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     {
                         if (y - b == x - a + n || y - b == x - a - n || y - b == -(x - a) + n || y - b == -(x - a) - n)
                         {
-                            tileCS[i].changeTileColorAndInfo(0, false, maxColor + 1);
-                            tileCS[i].updateTileColor();
+                            tileCS[i].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
                         }
                     }
                 }
@@ -741,17 +759,29 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         }
         else if (animNum == eventNumChainNodeRange[0])
         {
-            yield return animationDelayCondition;
-            conditionBeatCnt = beatCnt + PlusBeatInOneUpdate;
-
-            for (int i = 1; i <= eventNumChainNodeGenerate[1]; ++i)
+            for (int i = 1; i <= eventNumChainNodeGenerate[1] / 2; ++i)
             {
                 for (int k = 1; k <= i; ++k)
                 {
-                    tileCS[originTileNum + (i - 1) * maxMapSize + k - 1].changeTileColorAndInfo(0, false, maxColor + 1);
-                    tileCS[originTileNum + (k - 1) * maxMapSize + i - 1].changeTileColorAndInfo(0, false, maxColor + 1);
+                    tileCS[originTileNum + (i - 1) * maxMapSize + k - 1].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
+                    tileCS[originTileNum + (k - 1) * maxMapSize + i - 1].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
+                    if (chainNodeCntBeatCnt != 0)
+                    {
+                        print(i);
+                        StartCoroutine(tileCS[originTileNum + (i - 1) * maxMapSize + k - 1].glowImageSwitch(true, true));
+                        StartCoroutine(tileCS[originTileNum + (k - 1) * maxMapSize + i - 1].glowImageSwitch(true, true));
+                    }
                 }
+                conditionBeatCnt = beatCnt + 2 * PlusBeatInOneUpdate;
                 yield return animationDelayCondition;
+            }
+
+            for (int y = maxMapSize / 2 + 1; y <= 8; ++y)
+            {
+                for (int x = maxMapSize / 2 + 1; x <= 8; ++x)
+                {
+                    tileCS[(y - 1) * maxMapSize + x].tileColorAndInfoToDefualt(0, false);
+                }
             }
         }
         else if (animNum == eventNumChainNodeRange[0] + 1)
@@ -770,7 +800,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
                 for (int k = 0; k < maxNodeDir; ++k) tileCS[i].tileColorAndInfoToDefualt(k, false);
-                tileCS[i].glowObj.SetActive(false);
+                StartCoroutine(tileCS[i].glowImageSwitch(false));
                 tileCS[i].updateTileColor();
             }
 
@@ -803,15 +833,14 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
                 for (int k = 0; k < maxNodeDir; ++k) tileCS[i].tileColorAndInfoToDefualt(k, false);
-                tileCS[i].glowObj.SetActive(false);
+                StartCoroutine(tileCS[i].glowImageSwitch(false));
                 tileCS[i].updateTileColor();
             }
 
             int pointTileNum = 0;
             for (int i = 1; i <= 3; ++i) if (collide[i].tileNum != 0) pointTileNum = collide[i].tileNum;
 
-            tileCS[pointTileNum].changeTileColorAndInfo(0, false, maxColor + 1);
-            tileCS[pointTileNum].updateTileColor();
+            tileCS[pointTileNum].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
             yield return animationDelay[2];
 
             int a = (pointTileNum - 1) % maxMapSize + 1;
@@ -828,8 +857,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     {
                         if (y - b == x - a + n || y - b == x - a - n || y - b == -(x - a) + n || y - b == -(x - a) - n)
                         {
-                            tileCS[i].changeTileColorAndInfo(0, false, maxColor + 1);
-                            tileCS[i].updateTileColor();
+                            tileCS[i].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
                         }
                     }
                 }

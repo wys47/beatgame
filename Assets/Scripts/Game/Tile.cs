@@ -8,7 +8,7 @@ public class Tile : Variables
     public Sprite[] tileImage = new Sprite[5];
     public GameObject tapSuccessEffect;
     public Animator anim;
-    public GameObject glowObj;
+    [SerializeField] private GameObject glowObj;
     public SpriteRenderer glowImageRenderer;
 
     private WaitForSeconds glowFadeTime = new WaitForSeconds(0.1f);
@@ -145,7 +145,7 @@ public class Tile : Variables
         }
     }
 
-    public void tileColorAndInfoToDefualt(int dir, bool isTemp)
+    public void tileColorAndInfoToDefualt(int dir, bool isTemp, bool updateColor = false)
     {
         if (!isTemp)
         {
@@ -159,8 +159,10 @@ public class Tile : Variables
             tempNodeTargetTileNum[dir] = 0;
             tempEndNodeOnTargetTile[dir] = false;
         }
+
+        if (updateColor) updateTileColor();
     }
-    public static void giveTileColorAndInfo(int dir, bool isFromTemp, Tile from, bool isToTemp, Tile to)
+    public void giveTileColorAndInfo(int dir, bool isFromTemp, Tile from, bool isToTemp, Tile to, bool updateColor = false)
     {
         int color = isFromTemp ? from.tempColor[dir] : from.tileColor[dir];
         int targetTileNumber = isFromTemp ? from.tempNodeTargetTileNum[dir] : from.tileNodeTargetTileNum[dir];
@@ -168,8 +170,10 @@ public class Tile : Variables
 
         to.changeTileColorAndInfo(dir, isToTemp, color, targetTileNumber, endNodeOnTargetTile ? 1 : 0);
         from.tileColorAndInfoToDefualt(dir, isFromTemp);
+
+        if (updateColor) updateTileColor();
     }
-    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1, int endNodeOnTargetTile = -1)
+    public void changeTileColorAndInfo(int dir, bool isTemp, int color = -1, int targetTileNumber = -1, int endNodeOnTargetTile = -1, bool updateColor = false)
     {
         if (!isTemp)
         {
@@ -183,6 +187,7 @@ public class Tile : Variables
             if (targetTileNumber != -1) tempNodeTargetTileNum[dir] = targetTileNumber;
             if (endNodeOnTargetTile != -1) tempEndNodeOnTargetTile[dir] = endNodeOnTargetTile == 1 ? true : false;
         }
+        if (updateColor) updateTileColor();
     }
 
     public IEnumerator ActivateTapSuccessEffect()
