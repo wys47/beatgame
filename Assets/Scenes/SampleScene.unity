@@ -562,7 +562,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Normal: normal, but not easy.'
+  m_text: 'Normal: normal, but not easy. Chain Nodes and single nodes are added.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6568,25 +6568,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f83628add6f71645a75770f66c6e89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventNumClickNodeRange: 0100000002000000
-  eventNumPositionedNodeRange: 0300000005000000
-  eventNumChainNodeRange: 0b0000000d000000
-  eventNumChainNodeGenerateCnt: 0400000008000000
-  eventNumGlobalNodeRange: 1500000016000000
-  eventNumGlobalAnim: 1500000016000000
-  ColorByCode:
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
-  - {r: 0, g: 0, b: 0, a: 0}
   gameUIManager: {fileID: 1488213310}
   difficultyViewerCS: {fileID: 932053163}
   musicManager: {fileID: 1100659883}
@@ -6603,72 +6584,6 @@ MonoBehaviour:
   - {fileID: 883038314}
   tilesHolder: {fileID: 304036001}
   tileObj: {fileID: 7231340724203619792, guid: b3af212e79b049048baa2181f3291506, type: 3}
-  tileCS:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   zoneObj:
   - {fileID: 288065787}
   - {fileID: 1546315450}
@@ -6677,6 +6592,7 @@ MonoBehaviour:
   - {fileID: 363233748}
   - {fileID: 533679844}
   mapGlowObj: {fileID: 1540990956}
+  mapGlowSprite: {fileID: 1540990958}
   nodesHolder: {fileID: 1674771401}
   nodeObj: {fileID: 8858094084106734731, guid: beb95a6f28cc51d468b3a3b69ddcd171, type: 3}
   nodeCS:
@@ -7043,7 +6959,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1036109928
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7280,12 +7196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca15e57bb0df5bb4282842507aa94127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventNumClickNodeRange: 0100000002000000
-  eventNumPositionedNodeRange: 0300000005000000
-  eventNumChainNodeRange: 0b0000000d000000
-  eventNumChainNodeGenerateCnt: 0400000008000000
-  eventNumGlobalNodeRange: 1500000016000000
-  eventNumGlobalAnim: 1500000016000000
   settingCS: {fileID: 1973790745}
 --- !u!1 &1100659882
 GameObject:
@@ -8531,6 +8441,7 @@ MonoBehaviour:
   tapAll: 0
   clickAll: 0
   difficultyViewerCS: {fileID: 932053163}
+  mapCtrl: {fileID: 1026667087}
 --- !u!1 &1367377044
 GameObject:
   m_ObjectHideFlags: 0
@@ -10466,7 +10377,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1749818161
 Transform:
   m_ObjectHideFlags: 0
@@ -11737,12 +11648,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6dcacdedce46a942b972458e1234a50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventNumClickNodeRange: 0100000002000000
-  eventNumPositionedNodeRange: 0300000005000000
-  eventNumChainNodeRange: 0b0000000d000000
-  eventNumChainNodeGenerateCnt: 0400000008000000
-  eventNumGlobalNodeRange: 1500000016000000
-  eventNumGlobalAnim: 1500000016000000
   set:
   - {fileID: 0}
   - {fileID: 1329699804}

@@ -11,6 +11,7 @@ public class ScoreBoardCS : MonoBehaviour
     private const int tapChainPoint = 100;
     private const int clickPoint = 300;
     private const int clickChainPoint = 200;
+    private const int chainNodePoint = 150;
 
     public Image[] tile;
     private Color black = new Color(0.4f, 0.4f, 0.4f, 1f);
@@ -29,21 +30,19 @@ public class ScoreBoardCS : MonoBehaviour
     private float accuracy;
 
     private int tapCnt;
-    private int tapScoreTotal;
     [HideInInspector] public bool tapAll;
     private int clickCnt;
-    private int clickScoreTotal;
     [HideInInspector] public bool clickAll;
 
     private WaitForSeconds[] waitForSeconds = { new WaitForSeconds(0.01f), new WaitForSeconds(0.5f), new WaitForSeconds(0.05f) };
 
     public DifficultyViewerCS difficultyViewerCS;
+    public MapCtrl mapCtrl;
 
     public void onCommonTap()
     {
         score += preTapPoint;
         tapCnt = 0;
-        tapScoreTotal = 0;
         tapAll = false;
 
         accuracy += 0.5f;
@@ -54,14 +53,12 @@ public class ScoreBoardCS : MonoBehaviour
         {
             score += perfectTapPoint + tapChainPoint * tapCnt;
             ++tapCnt;
-            tapScoreTotal += perfectTapPoint + tapChainPoint * tapCnt;
 
             ++accuracy;
         }
         else
         {
             tapCnt = 0;
-            tapScoreTotal = 0;
             tapAll = false;
         }
     }
@@ -71,16 +68,19 @@ public class ScoreBoardCS : MonoBehaviour
         {
             score += clickPoint + clickChainPoint * clickCnt;
             ++clickCnt;
-            clickScoreTotal += clickPoint + clickChainPoint * clickCnt;
 
             ++accuracy;
         }
         else
         {
             clickCnt = 0;
-            clickScoreTotal = 0;
             clickAll = false;
         }
+    }
+    public void onChainNodeTiming(int cnt)
+    {
+        score += chainNodePoint * cnt;
+        accuracy += cnt;
     }
 
     public void activate()
@@ -89,10 +89,8 @@ public class ScoreBoardCS : MonoBehaviour
         accuracy = 0;
 
         tapCnt = 0;
-        tapScoreTotal = 0;
         tapAll = true;
         clickCnt = 0;
-        clickScoreTotal = 0;
         clickAll = true;
     }
 

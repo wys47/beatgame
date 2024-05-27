@@ -24,6 +24,7 @@ public class Variables : MonoBehaviour
     protected int[] eventNumChainNodeGenerate = { 0, 8, 10, 12 };
     protected const int eventChainNodeCollideTileNum = 37;
 
-    protected int[] eventNumGlobalNodeRange1 = { 21, 22 };
-    protected int[] eventNumGlobalAnim1 = { 0, 21, 22 };
+    protected int[] eventNumGlobalNodeRange = { 21, 22 };
+    protected int[] eventNumGlobalAnim = { 0, 21, 22 };
+    protected float[] eventNumGlobalBeat = { 0f, 1f, 1f };
 }

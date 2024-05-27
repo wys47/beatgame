@@ -12,7 +12,7 @@ public class NodesTimingCS : Variables
     {
         "",
 
-        "4x,6x,8x,10c,12c,14c,15c,19z,20z,22z,24s,25f,26.5f,29p,30q,31q,32w,34f,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
+        "4x,6x,8x,10c,12c,14c,15c,19z,20z,22z,24s,26.5f,29p,30f,31f,32q,33q,34w,36f,38f,39f,40f,42f,44f,45f,47f,49f,51f,52f,53f,55f,57f,59f,60f,62f,"
     };
     public struct nodesTimingDef
     {
@@ -24,27 +24,42 @@ public class NodesTimingCS : Variables
 
     private void Start()
     {
-        int readMode = 0;
-        string num = "";
-        int nodeCnt = 0;
+        int readMode;
+        string num;
+        int nodeCnt;
+
+        float animBeatCnt;
+        float animLength;
+
         for (int i = 1; i < nodeInString.Length; ++i)
         {
+            readMode = 1;
+            num = "";
             nodeCnt = 1;
+
+            animBeatCnt = 0;
+            animLength = 0;
+
             for (int k = 0; k < nodeInString[i].Length; ++k)
             {
                 char ch = nodeInString[i][k];
-                if (readMode == 0)
-                {
-                    if (char.IsDigit(ch)) readMode = 1;
-                }
+
                 if (readMode == 1)
                 {
-                    if (!char.IsLetter(ch))
+                    if (char.IsDigit(ch)) readMode = 2;
+                    else print("Wrong string file.");
+                }
+                if (readMode == 2)
+                {
+                    if (char.IsDigit(ch) || ch == '.') num += ch;
+                    else if (char.IsLetter(ch))
                     {
-                        num += ch;
-                    }
-                    else
-                    {
+                        if (animBeatCnt > 0 && float.Parse(num) - animBeatCnt <= (animLength + maxMapSize) * PlusBeatInOneUpdate)
+                        {
+                            print("node timing crash with animation: " + i);
+                            animBeatCnt = 0;
+                        }
+
                         if (ch == 'f') nodesTiming[i, nodeCnt].eventNum = 0;
                         else
                         {
@@ -61,15 +76,27 @@ public class NodesTimingCS : Variables
                                 case 'o': nodesTiming[i, nodeCnt].eventNum = eventNumChainNodeRange[0] + 1; break;//연속 노드 생성
                                 case 'i': nodesTiming[i, nodeCnt].eventNum = eventNumChainNodeRange[0] + 2; break;//연속 노드 생성
 
-                                case 'a': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange1[0]; break;//맵 전체 애니메이션
-                                case 's': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange1[0] + 1; break;//맵 전체 애니메이션
+                                case 'a': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange[0]; break;//맵 전체 애니메이션
+                                case 's': nodesTiming[i, nodeCnt].eventNum = eventNumGlobalNodeRange[0] + 1; break;//맵 전체 애니메이션
                             }
+                        }
+
+                        if (nodesTiming[i, nodeCnt].eventNum >= eventNumGlobalNodeRange[0] && nodesTiming[i, nodeCnt].eventNum <= eventNumGlobalNodeRange[1])
+                        {
+                            animBeatCnt = float.Parse(num);
+                            animLength = eventNumGlobalBeat[nodesTiming[i, nodeCnt].eventNum - eventNumGlobalNodeRange[0] + 1];
                         }
 
                         nodesTiming[i, nodeCnt++].timing = float.Parse(num) + settingCS.sinc;
                         num = "";
-                        readMode = 0;
+                        readMode = 3;
                     }
+                    else if (ch == ',') print("Wrong string file: " + i);
+                }
+                else if (readMode == 3)
+                {
+                    if (ch == ',') readMode = 1;
+                    else print("Wrong string file: " + i);
                 }
             }
 

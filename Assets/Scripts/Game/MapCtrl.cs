@@ -8,6 +8,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private const int maxAudioPlayer = 3;
     private const int maxNode = 40;
     private const float maxMapAnimationPlayBeat = 1;
+    private const int plusWrongInputPenalty = 3;
 
     //°ÔÀÓ ¼öÄ¡ º¯¼ö
     [HideInInspector] public static Color[] ColorByCode = new Color[maxColor + 2];
@@ -51,6 +52,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private WaitForSeconds zoneFadeTime = new WaitForSeconds(0.05f);
 
     public GameObject mapGlowObj;
+    public SpriteRenderer mapGlowSprite;
 
     private WaitForSeconds[] animationDelay = new WaitForSeconds[4];
     private WaitUntil animationDelayCondition;
@@ -68,7 +70,11 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private int gameState;
     [HideInInspector] public float beatCnt;
     private bool afterBeatCntPlus;
+    private int wrongInputPenalty;
+
+    //AI
     private bool AIPlay = false;
+    private int AIDebug = 0;
 
     private struct nodeActiveInfoDef
     {
@@ -197,6 +203,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         collide[0].tileNum = 0;
 
         afterBeatCntPlus = false;
+        wrongInputPenalty = 0;
 
         nodeCycle = 0;
         nodeCntActive = 1;
@@ -226,16 +233,22 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             else positionedNodeEventNum[i] = ++n;
         }
 
+
+
         gameUIManager.scoreBoardCS.nodeCnt = nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming;
 
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++i)
         {
             nodeActiveInfo[i].eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum;
-            if (difficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) nodeActiveInfo[i].eventNum = 0;
+            if ((difficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) || (difficultyViewerCS.difficulty == 1 && nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])) nodeActiveInfo[i].eventNum = 0;
 
             float minusTiming =  Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize);
             if (nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) minusTiming = 8;
-            else if (nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1]) minusTiming = 5;
+            else if (nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])
+            {
+                minusTiming = 5;
+                gameUIManager.scoreBoardCS.nodeCnt += eventNumChainNodeGenerate[nodeActiveInfo[i].eventNum - eventNumChainNodeRange[0] + 1] - 1;
+            }
 
             float activeTiming = nodesTimingCS.nodesTiming[currentPlayingTrack, i].timing + PlusBeatInOneUpdate - minusTiming * PlusBeatInOneUpdate;
 
@@ -282,7 +295,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
         animationDelay[0] = new WaitForSeconds(0);
         animationDelay[1] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / 4 * 0.9f);
-        animationDelay[2] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / 15 * 0.9f);
+        animationDelay[2] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / (1 + (maxMapSize - 1) * 2) * 0.9f);
         animationDelay[3] = new WaitForSeconds(0.05f);
 
         animationDelayCondition = new WaitUntil(() => beatCnt == conditionBeatCnt);
@@ -292,6 +305,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     {
         beatCnt += PlusBeatInOneUpdate;
         afterBeatCntPlus = true;
+
+        if (wrongInputPenalty > 0)
+        {
+            --wrongInputPenalty;
+            if (wrongInputPenalty == 0) mapGlowObj.SetActive(false);
+        }
 
         if (makeMode == 0)
         {
@@ -366,7 +385,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
             if (collide[i].primeNodeRank != 0)
             {
-                if (Input.GetKeyDown(key) || (AIPlay && collide[i].primeNodeRank == 3))
+                if ((Input.GetKeyDown(key) && wrongInputPenalty == 0) || (AIPlay && collide[i].primeNodeRank == 3))
                 {
                     if (collide[i].primeNodeRank == 3)
                     {
@@ -391,12 +410,18 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     collide[i].primeNodeRank = 0;
                 }
             }
+            else if (Input.GetKeyDown(key))
+            {
+                mapGlowObj.SetActive(true);
+                mapGlowSprite.color = ColorByCode[0];
+                wrongInputPenalty = plusWrongInputPenalty;
+            }
         }
 
         if (tapSuccess)
         {
             int eventNum = (int)findActivatedNodeByBeatCnt(nodeCntActive - 1, beatCnt, 2);
-            if (eventNum >= eventNumGlobalNodeRange1[0] && eventNum <= eventNumGlobalNodeRange1[1])
+            if (eventNum >= eventNumGlobalNodeRange[0] && eventNum <= eventNumGlobalNodeRange[1])
             {
                 if (gameUIManager.scoreBoardCS.tapAll) StartCoroutine(MapAnimation(eventNum));
                 gameUIManager.scoreBoardCS.tapAll = true;
@@ -410,8 +435,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         {
             if (beatCnt < chainNodeActiveUntil)
             {
-                if (Input.GetMouseButtonDown(0)) chainNodeCntBeatCnt = beatCnt;
-                if (Input.GetMouseButtonUp(0)) chainTilePointCnt();
+                if (Input.GetKeyDown(KeyCode.LeftShift) || (AIPlay && AIDebug == 0))
+                {
+                    chainNodeCntBeatCnt = beatCnt;
+                    if (AIPlay) AIDebug = 1;
+                }
+                if (Input.GetKeyUp(KeyCode.LeftShift)) chainTilePointCnt();
                 if (!chainNodeAnimActive)
                 {
                     StartCoroutine(MapAnimation((int)findActivatedNodeByEventNum(nodeCntActive - 1, eventNumChainNodeRange[0], eventNumChainNodeRange[1], 2), eventChainNodeCollideTileNum));
@@ -424,6 +453,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     private void chainTilePointCnt()
     {
         int point = (int)((chainNodeCntBeatCnt > 0 ? beatCnt - chainNodeCntBeatCnt : 0) / PlusBeatInOneUpdate);
+        gameUIManager.scoreBoardCS.onChainNodeTiming(point);
         chainNodeCntBeatCnt = 0;
         chainNodeActiveUntil = 0;
     }
@@ -698,7 +728,6 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
             if (autoOff && i == 5)
             {
-                print(1);
                 i = 1;
                 onOff = false;
                 autoOff = false;
@@ -767,7 +796,6 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     tileCS[originTileNum + (k - 1) * maxMapSize + i - 1].changeTileColorAndInfo(0, false, maxColor + 1, -1, -1, true);
                     if (chainNodeCntBeatCnt != 0)
                     {
-                        print(i);
                         StartCoroutine(tileCS[originTileNum + (i - 1) * maxMapSize + k - 1].glowImageSwitch(true, true));
                         StartCoroutine(tileCS[originTileNum + (k - 1) * maxMapSize + i - 1].glowImageSwitch(true, true));
                     }
@@ -792,11 +820,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         {
 
         }
-        else if (animNum == eventNumGlobalAnim1[1])
+        else if (animNum == eventNumGlobalAnim[1])
         {
             for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
 
             mapGlowObj.SetActive(true);
+            mapGlowSprite.color = ColorByCode[maxColor + 1];
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
                 for (int k = 0; k < maxNodeDir; ++k) tileCS[i].tileColorAndInfoToDefualt(k, false);
@@ -825,11 +854,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i) tileCS[i].tileColorAndInfoToDefualt(0, false);
             mapGlowObj.SetActive(false);
         }
-        else if (animNum == eventNumGlobalAnim1[2])
+        else if (animNum == eventNumGlobalAnim[2])
         {
             for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
 
             mapGlowObj.SetActive(true);
+            mapGlowSprite.color = ColorByCode[maxColor + 1];
             for (int i = 1; i <= maxMapSize * maxMapSize; ++i)
             {
                 for (int k = 0; k < maxNodeDir; ++k) tileCS[i].tileColorAndInfoToDefualt(k, false);
