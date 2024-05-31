@@ -50,6 +50,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     } 
     [HideInInspector] public zoneActiveInfoDef[] zoneActiveInfo = new zoneActiveInfoDef[6];
     private WaitForSeconds zoneFadeTime = new WaitForSeconds(0.05f);
+    private WaitForSeconds mapGlowFadeTime = new WaitForSeconds(0.01f);
 
     public GameObject mapGlowObj;
     public SpriteRenderer mapGlowSprite;
@@ -309,7 +310,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         if (wrongInputPenalty > 0)
         {
             --wrongInputPenalty;
-            if (wrongInputPenalty == 0) mapGlowObj.SetActive(false);
+            if (wrongInputPenalty == 0) StartCoroutine(mapGlowFade(0, false));
         }
 
         if (makeMode == 0)
@@ -412,8 +413,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             }
             else if (Input.GetKeyDown(key))
             {
-                mapGlowObj.SetActive(true);
-                mapGlowSprite.color = ColorByCode[0];
+                StartCoroutine(mapGlowFade(0, true));
                 wrongInputPenalty = plusWrongInputPenalty;
             }
         }
@@ -435,12 +435,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         {
             if (beatCnt < chainNodeActiveUntil)
             {
-                if (Input.GetKeyDown(KeyCode.LeftShift) || (AIPlay && AIDebug == 0))
+                if ((Input.GetKeyDown(KeyCode.LeftShift) && wrongInputPenalty == 0) || (AIPlay && AIDebug == 0))
                 {
                     chainNodeCntBeatCnt = beatCnt;
                     if (AIPlay) AIDebug = 1;
                 }
-                if (Input.GetKeyUp(KeyCode.LeftShift)) chainTilePointCnt();
+                if (Input.GetKeyUp(KeyCode.LeftShift) && chainNodeCntBeatCnt > 0) chainTilePointCnt();
                 if (!chainNodeAnimActive)
                 {
                     StartCoroutine(MapAnimation((int)findActivatedNodeByEventNum(nodeCntActive - 1, eventNumChainNodeRange[0], eventNumChainNodeRange[1], 2), eventChainNodeCollideTileNum));
@@ -735,6 +735,27 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         }
 
         if (!onOff) zoneObj[zoneNum].SetActive(false);
+    }
+    private IEnumerator mapGlowFade(int color, bool onOff, bool autoOff = false)
+    {
+        if (onOff) mapGlowObj.SetActive(true);
+
+        for (int i = 1; i <= 5; ++i)
+        {
+            if (onOff) mapGlowSprite.color = ColorByCode[color] + Color.black * (zoneAlpha * 0.2f * i - 1);
+            else mapGlowSprite.color = ColorByCode[color] + Color.black * (zoneAlpha - zoneAlpha * 0.2f * i - 1);
+
+            yield return mapGlowFadeTime;
+
+            if (autoOff && i == 5)
+            {
+                i = 1;
+                onOff = false;
+                autoOff = false;
+            }
+        }
+
+        if (!onOff) mapGlowObj.SetActive(false);
     }
 
     IEnumerator timer(WaitForSeconds sec)
