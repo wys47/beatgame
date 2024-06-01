@@ -6,10 +6,10 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Buttons
+  m_Name: Setting
   m_Controller: {fileID: 9100000, guid: 441e3955af864d54db680d98c8e827c0, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: b7cdabfeb107d3d469b6e26bb9ac1217, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: af445a27d5383e04fb39bcd4f7507408, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 50f63a3378db53e4f985391c04e007e6, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: 11ea1342f78835d4195a3586e715312d, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: af445a27d5383e04fb39bcd4f7507408, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 50f63a3378db53e4f985391c04e007e6, type: 2}

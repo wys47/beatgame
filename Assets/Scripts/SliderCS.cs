@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SliderCS : MonoBehaviour
 {
-    public SettingCS settingCS;
+    public MenuSettingCS settingCS;
 
     public RectTransform SliderRT;
     public Transform SliderTr;

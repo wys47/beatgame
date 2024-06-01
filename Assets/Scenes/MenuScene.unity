@@ -1055,7 +1055,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: menu volume
+  m_text: Sound effect volume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1142,7 +1142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 205850409}
   m_Layer: 5
-  m_Name: MenuVolume
+  m_Name: EffectVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1588,8 +1588,8 @@ GameObject:
   - component: {fileID: 363306001}
   - component: {fileID: 363306000}
   - component: {fileID: 363306003}
-  - component: {fileID: 363306004}
   - component: {fileID: 363306002}
+  - component: {fileID: 363306004}
   m_Layer: 5
   m_Name: Setting
   m_TagString: Untagged
@@ -1742,21 +1742,28 @@ MonoBehaviour:
   image: {fileID: 363306000}
   defealtImage: {fileID: -6416704506416456542, guid: 37047669910e80040a41d120ac2d7a68, type: 3}
   enterImage: {fileID: 8709048100008359137, guid: 37047669910e80040a41d120ac2d7a68, type: 3}
---- !u!114 &363306004
-MonoBehaviour:
+--- !u!95 &363306004
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363305998}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bd1c7e9ece92b745884964c079633bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageRT: {fileID: 363305999}
-  image: {fileID: 363306000}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 47f63e777592b8f48910b55077197367, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &391954636
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,8 +1814,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa92464255e65040b03f2a137786c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rt_b: {fileID: 1281366999}
-  rt_o: {fileID: 1998625072}
 --- !u!1 &412888714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,6 +1847,7 @@ RectTransform:
   - {fileID: 1305343204}
   - {fileID: 1950818252}
   - {fileID: 1779379756}
+  - {fileID: 1685661909}
   m_Father: {fileID: 818397092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1862,6 +1868,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleManagerObj: {fileID: 1950818251}
+  titleManager: {fileID: 1950818253}
   homeManagerObj: {fileID: 1305343203}
   homeManager: {fileID: 1305343205}
 --- !u!1 &437895828
@@ -1996,7 +2003,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: game volume
+  m_text: Music volume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2664,7 +2671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf392a1e17af9443b0ae3e6600ad0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingCS: {fileID: 1973790745}
+  settingCS: {fileID: 0}
   SliderRT: {fileID: 1000329918}
   SliderTr: {fileID: 1000329918}
   minSliderPos: -175
@@ -2874,8 +2881,8 @@ GameObject:
   - component: {fileID: 794541537}
   - component: {fileID: 794541536}
   - component: {fileID: 794541538}
-  - component: {fileID: 794541540}
   - component: {fileID: 794541539}
+  - component: {fileID: 794541540}
   m_Layer: 5
   m_Name: Left
   m_TagString: Untagged
@@ -3040,21 +3047,28 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!114 &794541540
-MonoBehaviour:
+--- !u!95 &794541540
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 794541534}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bd1c7e9ece92b745884964c079633bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageRT: {fileID: 794541535}
-  image: {fileID: 794541536}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 6d74733eeeea9484ca0e24adbacc7e33, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &801136756
 GameObject:
   m_ObjectHideFlags: 0
@@ -3411,7 +3425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf392a1e17af9443b0ae3e6600ad0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingCS: {fileID: 1973790745}
+  settingCS: {fileID: 0}
   SliderRT: {fileID: 1748643722}
   SliderTr: {fileID: 1748643722}
   minSliderPos: -175
@@ -4014,7 +4028,7 @@ GameObject:
   m_Component:
   - component: {fileID: 970156848}
   m_Layer: 5
-  m_Name: GameVolume
+  m_Name: MusicVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4053,8 +4067,8 @@ GameObject:
   - component: {fileID: 972696758}
   - component: {fileID: 972696757}
   - component: {fileID: 972696759}
-  - component: {fileID: 972696761}
   - component: {fileID: 972696760}
+  - component: {fileID: 972696761}
   m_Layer: 5
   m_Name: Right
   m_TagString: Untagged
@@ -4219,21 +4233,28 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
---- !u!114 &972696761
-MonoBehaviour:
+--- !u!95 &972696761
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972696755}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bd1c7e9ece92b745884964c079633bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageRT: {fileID: 972696756}
-  image: {fileID: 972696757}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 6d74733eeeea9484ca0e24adbacc7e33, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &977241162
 GameObject:
   m_ObjectHideFlags: 0
@@ -5177,7 +5198,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: master volume
+  m_text: Master volume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5713,7 +5734,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1305343204
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5752,12 +5773,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recordBoardCS: {fileID: 2074075720}
   background: {fileID: 2085838854}
-  left: {fileID: 794541540}
-  right: {fileID: 972696761}
-  setting: {fileID: 363306004}
-  musicInfo: {fileID: 2119042842}
-  play: {fileID: 1872920641}
   setting_screen: {fileID: 834796511}
+  leftAnim: {fileID: 0}
+  rightAnim: {fileID: 0}
+  settingAnim: {fileID: 0}
+  musicInfoAnim: {fileID: 0}
+  playAnim: {fileID: 0}
 --- !u!1 &1315968660
 GameObject:
   m_ObjectHideFlags: 0
@@ -6533,12 +6554,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685661907}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -960.2335, y: -540.00006, z: 0}
+  m_LocalScale: {x: 2.1011674, y: 2.1011674, z: 2.1011674}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 412888715}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1685661910
 MonoBehaviour:
@@ -7365,7 +7386,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageRT: {fileID: 1872920636}
   image: {fileID: 1872920639}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
 --- !u!114 &1872920642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7435,9 +7460,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39da7763f16f5274387f1cd64959401e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuUI: {fileID: 412888714}
-  gameObject_: {fileID: 0}
-  gameUI: {fileID: 0}
 --- !u!1 &1890950042
 GameObject:
   m_ObjectHideFlags: 0
@@ -7489,7 +7511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf392a1e17af9443b0ae3e6600ad0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingCS: {fileID: 1973790745}
+  settingCS: {fileID: 0}
   SliderRT: {fileID: 1225401896}
   SliderTr: {fileID: 1225401896}
   minSliderPos: -175
@@ -7717,10 +7739,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1950818251}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 060750b2c3552644c89938b1b4049c8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 27e0ee39e2c601543a62e702d7b53782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineCS: {fileID: 391954638}
+  title: {fileID: 539610372}
+  title_t: {fileID: 81488390}
+  buttons: {fileID: 900574153}
+  line_b: {fileID: 1281367002}
+  line_o: {fileID: 1998625075}
+  menuAudio: {fileID: 1779379755}
+  musicManager: {fileID: 1100659883}
 --- !u!1 &1973790743
 GameObject:
   m_ObjectHideFlags: 0
@@ -7777,9 +7805,8 @@ MonoBehaviour:
   - 0
   audios:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 1685661908}
   - {fileID: 1779379755}
+  - {fileID: 1685661908}
   sliderCS:
   - {fileID: 0}
   - {fileID: 1890950044}
@@ -8094,6 +8121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2074075719}
   - component: {fileID: 2074075720}
+  - component: {fileID: 2074075721}
   m_Layer: 5
   m_Name: Records
   m_TagString: Untagged
@@ -8162,6 +8190,28 @@ MonoBehaviour:
   - {fileID: 315665341}
   - {fileID: 1318678491}
   - {fileID: 212610312}
+--- !u!95 &2074075721
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074075718}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1841f3c783e245c459d7e23f7c88c23c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2085838854
 GameObject:
   m_ObjectHideFlags: 0
@@ -8401,21 +8451,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 800, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2119042842
-MonoBehaviour:
+--- !u!95 &2119042842
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2119042836}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bd1c7e9ece92b745884964c079633bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  imageRT: {fileID: 2119042841}
-  image: {fileID: 2119042838}
-  color: {r: 1, g: 1, b: 1, a: 1}
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: 19a6400192252fd4281be7a5f390d295, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2127221988
 GameObject:
   m_ObjectHideFlags: 0
@@ -8556,6 +8613,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 1315968661}
-  - {fileID: 1685661909}
   - {fileID: 818397092}
   - {fileID: 2026534085}

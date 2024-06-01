@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class SettingCS : Variables
+public class MenuSettingCS : Variables
 {
     public GameObject[] set;
     private int currentSet;
@@ -12,7 +12,7 @@ public class SettingCS : Variables
     [HideInInspector] public float sinc;
     public TextMeshProUGUI sincText;
 
-    [HideInInspector] public float[] volume = new float[3];//0.마스터1.게임2.메뉴
+    [HideInInspector] public float[] volume = new float[3];//0.마스터1.음악2.효과음
     public AudioSource[] audios;
     public SliderCS[] sliderCS;
 
@@ -29,7 +29,6 @@ public class SettingCS : Variables
 
         audios[1].volume = 0.25f;
         audios[2].volume = 0.25f;
-        audios[3].volume = 0.25f;
     }
 
     public void changeVolume(int n, float value)
@@ -43,13 +42,11 @@ public class SettingCS : Variables
             {
                 audios[1].volume *= value / pre;
                 audios[2].volume *= value / pre;
-                audios[3].volume *= value / pre;
             }
             else
             {
                 audios[1].volume = value * sliderCS[1].value;
                 audios[2].volume = value * sliderCS[2].value;
-                audios[3].volume = value * sliderCS[2].value;
             }
         }
         else if (n == 1)
@@ -61,7 +58,6 @@ public class SettingCS : Variables
         {
             volume[2] = volume[0] * value;
             audios[2].volume = volume[2];
-            audios[3].volume = volume[2];
         }
     }
 

@@ -17,27 +17,17 @@ public class MusicInfoCS : MonoBehaviour
     private WaitForSeconds waitForSeconds = new WaitForSeconds(0.01f);
 
     private int currentMusicNumber;
-    private bool playTitleMusic = true;
 
     private void OnEnable()
     {
-        if (playTitleMusic)
-        {
-            audio.clip = musicManager.music[0];
-            audio.Play();
-            playTitleMusic = false;
-        }
-        else
-        {
-            currentMusicNumber = 1;
+        currentMusicNumber = 1;
 
-            musicInfoText[1].text = musicManager.musicName[currentMusicNumber];
-            musicInfoText[2].text = musicManager.musicLength[currentMusicNumber];
-            musicInfoText[3].text = musicManager.musicBPM[currentMusicNumber].ToString() + "BPM";
+        musicInfoText[1].text = musicManager.musicName[currentMusicNumber];
+        musicInfoText[2].text = musicManager.musicLength[currentMusicNumber];
+        musicInfoText[3].text = musicManager.musicBPM[currentMusicNumber].ToString() + "BPM";
 
-            audio.clip = musicManager.music[1];
-            audio.Play();
-        }
+        audio.clip = musicManager.music[1];
+        audio.Play();
     }
 
     public void onLeftOrRightButtonUp(int leftOrRight)

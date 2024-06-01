@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NodesTimingCS : Variables
 {
-    public SettingCS settingCS;
+    public MenuSettingCS settingCS;
 
     private static int maxSong = 1;
 

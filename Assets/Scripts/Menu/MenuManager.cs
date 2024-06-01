@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     public GameObject titleManagerObj;
+    public TitleManager titleManager;
 
     public GameObject homeManagerObj;
     public HomeManager homeManager;
@@ -19,6 +20,7 @@ public class MenuManager : MonoBehaviour
     //타이틀화면 버튼
     public void OnStartButtonUp()
     {
+        StartCoroutine(titleManager.onDeActivate());
         homeManagerObj.SetActive(true);
         StartCoroutine(homeManager.activate(true));
     }
