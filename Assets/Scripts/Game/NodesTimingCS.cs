@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class NodesTimingCS : Variables
 {
-    public MenuSettingCS settingCS;
-
     private static int maxSong = 1;
 
     private string[] nodeInString =
@@ -87,7 +85,7 @@ public class NodesTimingCS : Variables
                             animLength = eventNumGlobalBeat[nodesTiming[i, nodeCnt].eventNum - eventNumGlobalNodeRange[0] + 1];
                         }
 
-                        nodesTiming[i, nodeCnt++].timing = float.Parse(num) + settingCS.sinc;
+                        nodesTiming[i, nodeCnt++].timing = float.Parse(num) + MenuSettingCS.sinc;
                         num = "";
                         readMode = 3;
                     }

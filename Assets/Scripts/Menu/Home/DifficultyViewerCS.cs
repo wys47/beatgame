@@ -8,7 +8,7 @@ public class DifficultyViewerCS : MonoBehaviour
     public Image[] image;
     private Color[,] color = new Color[5, 2]; 
 
-    [HideInInspector] public int difficulty;
+    [HideInInspector] public static int difficulty;
 
     public GameObject[] info;
 

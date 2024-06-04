@@ -54,7 +54,7 @@ public class NodeCS : Variables
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) / maxMapSize - (maxMapSize - line)) * PlusBeatInOneUpdate;
 
-                    if (pairDir <= unpairTapNodeGeneratePosibility * 10 && mapCtrl.difficultyViewerCS.difficulty >= 2) pairDir = 0;
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
                     else pairDir = 3;
 
                     MapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum);
@@ -77,13 +77,13 @@ public class NodeCS : Variables
                     if (line <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - (maxMapSize - line + 1)) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && mapCtrl.difficultyViewerCS.difficulty >= 2) pairDir = 0;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
                         else pairDir = 3;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - line) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && mapCtrl.difficultyViewerCS.difficulty >= 2) pairDir = 0;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
                         else pairDir = 4;
                     }
 
@@ -107,13 +107,13 @@ public class NodeCS : Variables
                     if (line + 1 <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (maxMapSize - line)) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && mapCtrl.difficultyViewerCS.difficulty >= 2) pairDir = 0;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
                         else pairDir = 2;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (line + 1)) * PlusBeatInOneUpdate;
-                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && mapCtrl.difficultyViewerCS.difficulty >= 2) pairDir = 0;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
                         else pairDir = 1;
                     }
 
@@ -135,7 +135,7 @@ public class NodeCS : Variables
                     }
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) % maxMapSize - (maxMapSize - line - 1)) * PlusBeatInOneUpdate;
-                    if (pairDir <= unpairTapNodeGeneratePosibility * 10 && mapCtrl.difficultyViewerCS.difficulty >= 2) pairDir = 0;
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
                     else pairDir = 2;
 
                     MapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum);

@@ -281,14 +281,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f83628add6f71645a75770f66c6e89c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameUIManager: {fileID: 0}
-  difficultyViewerCS: {fileID: 0}
-  musicManager: {fileID: 0}
+  gameUIManager: {fileID: 108929403}
   nodesTimingCS: {fileID: 353459457}
   makeMode: 0
   gameSound:
   - {fileID: 0}
   - {fileID: 8300000, guid: d31ce782a47f29c41a6f82c1c56d4795, type: 3}
+  - {fileID: 8300000, guid: ca101f7f1b3125648bc4e6fbb2e36aa2, type: 3}
   musicPlayer: {fileID: 60311696}
   gameSoundPlayers:
   - {fileID: 0}
@@ -1230,7 +1229,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca15e57bb0df5bb4282842507aa94127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingCS: {fileID: 0}
 --- !u!4 &353459458
 Transform:
   m_ObjectHideFlags: 0
@@ -1960,7 +1958,6 @@ MonoBehaviour:
   nodeCnt: 0
   tapAll: 0
   clickAll: 0
-  difficultyViewerCS: {fileID: 0}
   mapCtrl: {fileID: 0}
 --- !u!114 &642318127
 MonoBehaviour:

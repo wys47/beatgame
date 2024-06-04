@@ -16,11 +16,8 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
 
     //UI
     public GameUIManager gameUIManager;
-    public DifficultyViewerCS difficultyViewerCS;
 
     //À½¾Ç
-    public MusicManager musicManager;
-    private WaitForSeconds waitForStartFuzz = new WaitForSeconds(2f);
     private WaitForSeconds[] wiatForMusicStart = new WaitForSeconds[100];
     private float beatSensorRotateArc;
 
@@ -108,7 +105,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
     //µð¹ö±ë¿ë º¯¼ö
     private int debug = 0;
 
-    void Awake()
+    void Start()
     {
         ColorByCode[0] = new Color(0.2f, 0.2f, 0.2f, 1);
         ColorByCode[1] = new Color(1, 0, 0, 1);
@@ -140,10 +137,10 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         }
         tilesHolder.Rotate(0, 0, 45);
 
-        for (int i = 1; i <= musicManager.musicCnt; ++i)
+        for (int i = 1; i <= MusicManager.musicCnt; ++i)
         {
-            wiatForMusicStart[i] = new WaitForSeconds(musicManager.musicStartTime[i]);
-            beatSensorRotateArc = musicManager.musicBPM[i] / 5f;
+            wiatForMusicStart[i] = new WaitForSeconds(MusicManager.musicStartTime[i]);
+            beatSensorRotateArc = MusicManager.musicBPM[i] / 5f;
         }
 
         for (int i = 1; i <= maxNode; ++i)
@@ -152,11 +149,31 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             nodeCS[i] = nodeCopys[i].GetComponent<NodeCS>();
             nodeCopys[i].SetActive(false);
         }
-    }
 
-    void OnEnable()
-    {
-        StartCoroutine(onEnabledFunc());
+        currentPlayingTrack = 1;
+        for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
+        for (int i = 1; i <= 3; ++i) zoneActiveInfo[i].colorCode = 0;
+        mapGlowObj.SetActive(false);
+
+        beatSensor.rotation = Quaternion.Euler(0, 0, 0);
+        gameState = -1;
+        beatCnt = -PlusBeatInOneUpdate * maxMapSize - PlusBeatInOneUpdate;
+
+        collide[0].tileNum = 0;
+
+        afterBeatCntPlus = false;
+        wrongInputPenalty = 0;
+
+        nodeCycle = 0;
+        nodeCntActive = 1;
+        chainNodeActiveUntil = 0;
+        chainNodeCntBeatCnt = 0;
+
+        itsTime = 0;
+
+        musicPlayer.clip = MusicManager.music[currentPlayingTrack];
+        musicPlayer.Play();
+        gameState = 0;
     }
 
     void Update()
@@ -190,35 +207,6 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         }
     }
 
-    private IEnumerator onEnabledFunc()
-    {
-        currentPlayingTrack = 1;
-        for (int i = 1; i <= 3; ++i) zoneObj[i].SetActive(false);
-        for (int i = 1; i <= 3; ++i) zoneActiveInfo[i].colorCode = 0;
-        mapGlowObj.SetActive(false);
-
-        beatSensor.rotation = Quaternion.Euler(0, 0, 0);
-        gameState = 0;
-        beatCnt = -PlusBeatInOneUpdate * maxMapSize - PlusBeatInOneUpdate;
-
-        collide[0].tileNum = 0;
-
-        afterBeatCntPlus = false;
-        wrongInputPenalty = 0;
-
-        nodeCycle = 0;
-        nodeCntActive = 1;
-        chainNodeActiveUntil = 0;
-        chainNodeCntBeatCnt = 0;
-
-        itsTime = 0;
-
-        yield return waitForStartFuzz;
-
-        musicPlayer.clip = musicManager.music[currentPlayingTrack];
-        musicPlayer.Play();
-    }
-
     private void onFirstUpdate()
     {
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming + 1; ++i) nodeActiveInfo[i].activeTiming = PlusBeatInOneUpdate * 0.5f;
@@ -234,14 +222,12 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             else positionedNodeEventNum[i] = ++n;
         }
 
-
-
         gameUIManager.scoreBoardCS.nodeCnt = nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming;
 
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++i)
         {
             nodeActiveInfo[i].eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum;
-            if ((difficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) || (difficultyViewerCS.difficulty == 1 && nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])) nodeActiveInfo[i].eventNum = 0;
+            if ((DifficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) || (DifficultyViewerCS.difficulty == 1 && nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])) nodeActiveInfo[i].eventNum = 0;
 
             float minusTiming =  Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize);
             if (nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) minusTiming = 8;
@@ -295,8 +281,8 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         }
 
         animationDelay[0] = new WaitForSeconds(0);
-        animationDelay[1] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / 4 * 0.9f);
-        animationDelay[2] = new WaitForSeconds(60 / musicManager.musicBPM[currentPlayingTrack] / (1 + (maxMapSize - 1) * 2) * 0.9f);
+        animationDelay[1] = new WaitForSeconds(60 / MusicManager.musicBPM[currentPlayingTrack] / 4 * 0.9f);
+        animationDelay[2] = new WaitForSeconds(60 / MusicManager.musicBPM[currentPlayingTrack] / (1 + (maxMapSize - 1) * 2) * 0.9f);
         animationDelay[3] = new WaitForSeconds(0.05f);
 
         animationDelayCondition = new WaitUntil(() => beatCnt == conditionBeatCnt);
@@ -396,7 +382,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     }
                     else
                     {
-                        if (difficultyViewerCS.difficulty > 1) gameUIManager.scoreBoardCS.onCommonTap();
+                        if (DifficultyViewerCS.difficulty > 1) gameUIManager.scoreBoardCS.onCommonTap();
                         else
                         {
                             gameUIManager.scoreBoardCS.onTapTiming(true);
@@ -404,7 +390,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                         }
                     }
 
-                    if (difficultyViewerCS.difficulty == 4) StartCoroutine(zoneFade(i, collide[i].tileColor, true, true));
+                    if (DifficultyViewerCS.difficulty == 4) StartCoroutine(zoneFade(i, collide[i].tileColor, true, true));
 
                     StartCoroutine(tileCS[collide[i].collideTileNum].ActivateTapSuccessEffect());
                     tileCS[collide[i].tileNum].changeTileColorAndInfo(collide[i].dir, false, -1, 0);
@@ -525,7 +511,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             }
         }
 
-        for (int i = difficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
+        for (int i = DifficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
         {
             if (zoneActiveInfo[i].colorCode != 0)
             {

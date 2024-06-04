@@ -11,13 +11,12 @@ public class TitleManager : MonoBehaviour
     public Animator line_o;
 
     public AudioSource menuAudio;
-    public MusicManager musicManager;
 
     private WaitForSeconds waitForSeconds = new WaitForSeconds(0.5f);
 
     private void OnEnable()
     {
-        menuAudio.clip = musicManager.music[0];
+        menuAudio.clip = MusicManager.music[0];
         menuAudio.Play();
     }
 

@@ -9,7 +9,7 @@ public class MenuSettingCS : Variables
     private int currentSet;
     private const int maxSet = 2;
 
-    [HideInInspector] public float sinc;
+    [HideInInspector] public static float sinc;
     public TextMeshProUGUI sincText;
 
     [HideInInspector] public float[] volume = new float[3];//0.마스터1.음악2.효과음

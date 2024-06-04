@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    private WaitForSeconds waitForMenuExit = new WaitForSeconds(0.5f);
+
     void Start()
     {
         Application.targetFrameRate = 60;
@@ -12,6 +14,12 @@ public class GameManager : MonoBehaviour
 
     public void onPlayButtonUp()
     {
-        SceneManager.LoadScene("GameScene");
+        StartCoroutine(gameSceneLoad());
+    }
+
+    private IEnumerator gameSceneLoad()
+    {
+        yield return waitForMenuExit;
+        SceneManager.LoadSceneAsync("GameScene");
     }
 }

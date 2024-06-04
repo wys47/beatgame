@@ -4010,7 +4010,6 @@ MonoBehaviour:
   - {fileID: 1033977838}
   - {fileID: 8783598}
   - {fileID: 173412001}
-  difficulty: 0
   info:
   - {fileID: 0}
   - {fileID: 1602822055}
@@ -5047,20 +5046,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717ec446dfa8bf545b963bfe4a998121, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicCnt: 1
-  music:
+  musicInput:
   - {fileID: 8300000, guid: f025e3d535e9bf945a88d7ed6e148d56, type: 3}
   - {fileID: 8300000, guid: 65f6f2c34ed5f18448fe97b03cf9cf93, type: 3}
-  musicName:
+  musicNameInput:
   - 
   - Janji - Heroes Tonight
-  musicLength:
+  musicLengthInput:
   - 
-  - 3:30
-  musicBPM: 0000000080000000
-  musicStartTime:
+  - 3:28
+  musicBPMInput: 0000000080000000
+  musicStartTimeInput:
   - 0
-  - 9
+  - 0.5
+  gameSoundInput:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 8300000, guid: d31ce782a47f29c41a6f82c1c56d4795, type: 3}
+  - {fileID: 8300000, guid: afda6c77c3fff5845a1381235485b5d3, type: 3}
+  - {fileID: 8300000, guid: 33cd54c950f560a408d0e4a437332cfa, type: 3}
+  - {fileID: 8300000, guid: 92a43669e8ac9e74bbbd2a687a3ce16e, type: 3}
+  - {fileID: 0}
 --- !u!4 &1100659884
 Transform:
   m_ObjectHideFlags: 0
@@ -5783,13 +5789,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordBoardCS: {fileID: 2074075720}
-  background: {fileID: 2085838854}
   setting_screen: {fileID: 834796511}
   leftAnim: {fileID: 794541540}
   rightAnim: {fileID: 972696761}
   settingAnim: {fileID: 363306004}
   musicInfoAnim: {fileID: 2119042842}
-  playAnim: {fileID: 1872920643}
 --- !u!1 &1315968660
 GameObject:
   m_ObjectHideFlags: 0
@@ -7233,7 +7237,6 @@ GameObject:
   - component: {fileID: 1872920639}
   - component: {fileID: 1872920642}
   - component: {fileID: 1872920637}
-  - component: {fileID: 1872920643}
   m_Layer: 5
   m_Name: Play
   m_TagString: Untagged
@@ -7408,28 +7411,6 @@ MonoBehaviour:
   - {fileID: 786404341, guid: 4e37952bdbe6ee5428247c07f1fad07a, type: 3}
   - {fileID: -647181284, guid: 4e37952bdbe6ee5428247c07f1fad07a, type: 3}
   - {fileID: -757117975, guid: 4e37952bdbe6ee5428247c07f1fad07a, type: 3}
---- !u!95 &1872920643
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1872920635}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 8ff2425fe4cd9e04d873b00e07470e7f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1889029518
 GameObject:
   m_ObjectHideFlags: 0
@@ -7762,7 +7743,6 @@ MonoBehaviour:
   line_b: {fileID: 1281367002}
   line_o: {fileID: 1998625075}
   menuAudio: {fileID: 1779379755}
-  musicManager: {fileID: 1100659883}
 --- !u!1 &1973790743
 GameObject:
   m_ObjectHideFlags: 0
@@ -7811,7 +7791,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 1329699804}
   - {fileID: 1748173930}
-  sinc: -0.25
   sincText: {fileID: 820968414}
   volume:
   - 0
@@ -8400,15 +8379,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eb3e8098f99a3742a447502362bf63e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicManager: {fileID: 1100659883}
   audio: {fileID: 1779379755}
-  image: {fileID: 2119042838}
-  button: {fileID: 1872920639}
   musicInfoText:
   - {fileID: 0}
   - {fileID: 1545973440}
   - {fileID: 1040424779}
   - {fileID: 1713690532}
+  childUIAlphaCS: []
 --- !u!222 &2119042840
 CanvasRenderer:
   m_ObjectHideFlags: 0

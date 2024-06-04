@@ -35,8 +35,6 @@ public class ScoreBoardCS : MonoBehaviour
     [HideInInspector] public bool clickAll;
 
     private WaitForSeconds[] waitForSeconds = { new WaitForSeconds(0.01f), new WaitForSeconds(0.5f), new WaitForSeconds(0.05f) };
-
-    public DifficultyViewerCS difficultyViewerCS;
     public MapCtrl mapCtrl;
 
     public void onCommonTap()
@@ -134,7 +132,7 @@ public class ScoreBoardCS : MonoBehaviour
 
         if (accuracy == 100)
         {
-            for (int i = 1; i <= difficultyViewerCS.difficulty; ++i)
+            for (int i = 1; i <= DifficultyViewerCS.difficulty; ++i)
             {
                 for (int k = 1; k <= 10; ++k)
                 {
