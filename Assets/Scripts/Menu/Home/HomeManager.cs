@@ -55,4 +55,12 @@ public class HomeManager : MonoBehaviour
     {
         setting_screen.SetActive(false);
     }
+
+    public void leftAndRightPointerUp()
+    {
+        leftAnim.SetTrigger("anim1");
+        rightAnim.SetTrigger("anim1");
+        musicInfoAnim.SetTrigger("anim1");
+        playAnim.SetTrigger("anim1");
+    }
 }
