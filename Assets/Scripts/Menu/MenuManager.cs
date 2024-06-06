@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
     public GameObject titleManagerObj;
-    public TitleManager titleManager;
+    public Animator titleAnim;
 
     public GameObject homeManagerObj;
     public HomeManager homeManager;
+
+    private WaitForSeconds waitForTitleExit = new WaitForSeconds(0.5f);
+    private WaitForSeconds waitForMenuExit = new WaitForSeconds(0.5f);
 
     void Awake()
     {
@@ -20,13 +24,27 @@ public class MenuManager : MonoBehaviour
     //타이틀화면 버튼
     public void OnStartButtonUp()
     {
-        StartCoroutine(titleManager.onDeActivate());
-        homeManagerObj.SetActive(true);
-        StartCoroutine(homeManager.activate(true));
+        StartCoroutine(homeActivate());
     }
 
     public void onPlayButtonUp()
     {
-        StartCoroutine(homeManager.activate(false));
+        StartCoroutine(gameSceneLoad());
+    }
+
+    private IEnumerator homeActivate()
+    {
+        titleAnim.SetTrigger("disabled");
+
+        yield return waitForMenuExit;
+
+        homeManagerObj.SetActive(true);
+        homeManager.activate(true);
+    }
+
+    private IEnumerator gameSceneLoad()
+    {
+        yield return waitForMenuExit;
+        SceneManager.LoadSceneAsync("GameScene");
     }
 }

@@ -4,22 +4,10 @@ using UnityEngine;
 
 public class HomeManager : MonoBehaviour
 {
-    private WaitForSeconds[] waitForSeconds = new WaitForSeconds[1];
-
     public RecordBoardCS recordBoardCS;
     public GameObject setting_screen;
 
-    public Animator leftAnim;
-    public Animator rightAnim;
-    public Animator settingAnim;
-    public Animator musicInfoAnim;
-
-    void Start()
-    {
-        waitForSeconds[0] = new WaitForSeconds(1);
-    }
-
-    public IEnumerator activate(bool isActive)
+    public void activate(bool isActive)
     {
         if (isActive)
         {
@@ -30,13 +18,6 @@ public class HomeManager : MonoBehaviour
         {
             StartCoroutine(recordBoardCS.move(true, -1, false));
             setting_screen.SetActive(false);
-
-            leftAnim.SetTrigger("disabled");
-            rightAnim.SetTrigger("disabled");
-            settingAnim.SetTrigger("disabled");
-            musicInfoAnim.SetTrigger("disabled");
-
-            yield return waitForSeconds[0];
 
             gameObject.SetActive(false);
         }
@@ -54,8 +35,6 @@ public class HomeManager : MonoBehaviour
 
     public void leftAndRightPointerUp()
     {
-        leftAnim.SetTrigger("anim1");
-        rightAnim.SetTrigger("anim1");
-        musicInfoAnim.SetTrigger("anim1");
+
     }
 }

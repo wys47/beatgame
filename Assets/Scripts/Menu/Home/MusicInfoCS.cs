@@ -10,8 +10,6 @@ public class MusicInfoCS : MonoBehaviour
 
     public TextMeshProUGUI[] musicInfoText = new TextMeshProUGUI[4];
 
-    public ChildUIAlphaCS[] childUIAlphaCS;
-
     private WaitForSeconds waitForSeconds = new WaitForSeconds(0.2f);
 
     private int currentMusicNumber;
