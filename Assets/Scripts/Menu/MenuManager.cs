@@ -10,7 +10,6 @@ public class MenuManager : MonoBehaviour
     public Animator titleAnim;
 
     public GameObject homeManagerObj;
-    public HomeManager homeManager;
 
     private WaitForSeconds waitForTitleExit = new WaitForSeconds(0.5f);
     private WaitForSeconds waitForMenuExit = new WaitForSeconds(0.5f);
