@@ -227,7 +227,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
         for (int i = 1; i <= nodesTimingCS.nodesTiming[currentPlayingTrack, 0].maxTiming; ++i)
         {
             nodeActiveInfo[i].eventNum = nodesTimingCS.nodesTiming[currentPlayingTrack, i].eventNum;
-            if ((DifficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) || (DifficultyViewerCS.difficulty == 1 && nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])) nodeActiveInfo[i].eventNum = 0;
+            /*if ((DifficultyViewerCS.difficulty <= 2 && nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) || (DifficultyViewerCS.difficulty == 1 && nodeActiveInfo[i].eventNum >= eventNumChainNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumChainNodeRange[1])) nodeActiveInfo[i].eventNum = 0;*/
 
             float minusTiming =  Random.Range((int)(maxMapSize * 0.5f) + 1, maxMapSize);
             if (nodeActiveInfo[i].eventNum >= eventNumClickNodeRange[0] && nodeActiveInfo[i].eventNum <= eventNumClickNodeRange[1]) minusTiming = 8;
@@ -382,15 +382,15 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     }
                     else
                     {
-                        if (DifficultyViewerCS.difficulty > 1) gameUIManager.scoreBoardCS.onCommonTap();
+                        /*if (DifficultyViewerCS.difficulty > 1) gameUIManager.scoreBoardCS.onCommonTap();
                         else
                         {
                             gameUIManager.scoreBoardCS.onTapTiming(true);
                             tapSuccess = true;
-                        }
+                        }*/
                     }
 
-                    if (DifficultyViewerCS.difficulty == 4) StartCoroutine(zoneFade(i, collide[i].tileColor, true, true));
+                    //if (DifficultyViewerCS.difficulty == 4) StartCoroutine(zoneFade(i, collide[i].tileColor, true, true));
 
                     StartCoroutine(tileCS[collide[i].collideTileNum].ActivateTapSuccessEffect());
                     tileCS[collide[i].tileNum].changeTileColorAndInfo(collide[i].dir, false, -1, 0);
@@ -511,7 +511,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
             }
         }
 
-        for (int i = DifficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
+        /*for (int i = DifficultyViewerCS.difficulty <= 3 ? 1 : 4; i <= 5; ++i)
         {
             if (zoneActiveInfo[i].colorCode != 0)
             {
@@ -525,7 +525,7 @@ public class MapCtrl : Variables //°ÔÀÓ ½ÃÀÛÀÌ µÇ¸é ¸ÊÀ» »ý¼ºÇÏ°í °ÔÀÓÀ» ÁøÇàÇÏ´
                     zoneActiveInfo[i].colorCode = 0;
                 }
             }
-        }
+        }*/
         afterBeatCntPlus = false;
 
         if (!musicPlayer.isPlaying) onMusicEnd();

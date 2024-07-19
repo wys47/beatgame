@@ -132,7 +132,7 @@ public class ScoreBoardCS : MonoBehaviour
 
         if (accuracy == 100)
         {
-            for (int i = 1; i <= DifficultyViewerCS.difficulty; ++i)
+            /*for (int i = 1; i <= DifficultyViewerCS.difficulty; ++i)
             {
                 for (int k = 1; k <= 10; ++k)
                 {
@@ -150,7 +150,7 @@ public class ScoreBoardCS : MonoBehaviour
                     yield return waitForSeconds[2];
                     tileGlow[i].color = (i != 4 ? Color.white : Color.red) - Color.black * 0.1f * k;
                 }
-            }
+            }*/
         }
     }
 }

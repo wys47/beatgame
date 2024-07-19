@@ -38,7 +38,6 @@ public class MenuManager : MonoBehaviour
         yield return waitForMenuExit;
 
         homeManagerObj.SetActive(true);
-        homeManager.activate(true);
     }
 
     private IEnumerator gameSceneLoad()
