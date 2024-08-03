@@ -21,8 +21,8 @@ public class MusicPlayerImageCS : MonoBehaviour
 
     public AudioSource audioSource;
 
-    [HideInInspector] public int currentMusicNum;
-    [HideInInspector] public int currentAlbumNum;
+    [HideInInspector] public static int currentMusicNum;
+    [HideInInspector] public static int currentAlbumNum;
     public Sprite[] albumSprites;
 
     public GameObject volumeSlider;
