@@ -36,6 +36,8 @@ public class MusicPlayerImageCS : MonoBehaviour
     public RectTransform playBarKnobTr;
     private float[] playBarMax = { -133.5f, 128f };
 
+    public ProfileCS profileCS;
+
     private void Awake()
     {
         for (int i = 1; i <= maxMusicBar; ++i)
@@ -138,6 +140,8 @@ public class MusicPlayerImageCS : MonoBehaviour
         audioSource.Play();
         pausePlayState = 1;
         pausePlayButton.sprite = pausePlaySprite[1];
+
+        profileCS.updateVideos(currentMusicNum);
     }
 
     public void playBarKnobDrag()
