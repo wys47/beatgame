@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class ProfileCS : MonoBehaviour
 {
@@ -31,8 +32,10 @@ public class ProfileCS : MonoBehaviour
     private TMP_Text[,] videosTitles = new TMP_Text[infoBarCnt + 1, PlayedMusicDataCS.difficaltyCnt + 1];
     private TMP_Text[,] videosInfos = new TMP_Text[infoBarCnt + 1, PlayedMusicDataCS.difficaltyCnt + 1];
     public Animator[] screenAnim;
+    private int[,] videoDifficulty = new int[infoBarCnt + 1, PlayedMusicDataCS.difficaltyCnt + 1];
 
     private int lastPlayedMusicNum = MusicManager.defaultMusic;
+    [HideInInspector] public static int currentDifficulty;
 
     private void Awake()
     {
@@ -151,6 +154,7 @@ public class ProfileCS : MonoBehaviour
             {
                 videosObj[1, k].SetActive(true);
 
+                videoDifficulty[1, k] = i;
                 videosTitles[1, k].text = generateTitleName(i, MusicManager.musicArtist[musicNum], MusicManager.musicName[musicNum], PlayedMusicDataCS.isRecentPerfect[musicNum, i], PlayedMusicDataCS.playedCntByDifficalty[musicNum, i]);
                 videosInfos[1, k].text = PlayedMusicDataCS.recentViewer[musicNum, i] + " views, " + PlayedMusicDataCS.recentPlusSubscriber[musicNum, i] + " new subs";
 
@@ -164,6 +168,7 @@ public class ProfileCS : MonoBehaviour
             {
                 videosObj[2, k].SetActive(true);
 
+                videoDifficulty[2, k] = i;
                 videosTitles[2, k].text = generateTitleName(i, MusicManager.musicArtist[musicNum], MusicManager.musicName[musicNum], PlayedMusicDataCS.isRecentPerfect[musicNum, i], PlayedMusicDataCS.playedCntByDifficalty[musicNum, i] + 1);
                 videosInfos[2, k].text = "no info";
 
@@ -189,8 +194,10 @@ public class ProfileCS : MonoBehaviour
             else infoBarTr[i].position = (Vector2)infoBarTr[i - 1].position - Vector2.up * heightBetweenVideosHolderClose;
         }
     }
-    public void musicChanged()
-    {
 
+    public void playButtonUp(int n)
+    {
+        currentDifficulty = videoDifficulty[n / 10, n % 10];
+        SceneManager.LoadScene("GameScene");
     }
 }

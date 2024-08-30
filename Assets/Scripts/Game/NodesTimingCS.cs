@@ -85,7 +85,7 @@ public class NodesTimingCS : Variables
                             animLength = eventNumGlobalBeat[nodesTiming[i, nodeCnt].eventNum - eventNumGlobalNodeRange[0] + 1];
                         }
 
-                        //nodesTiming[i, nodeCnt++].timing = float.Parse(num) + MenuSettingCS.sinc;
+                        nodesTiming[i, nodeCnt++].timing = float.Parse(num) + SettingCS.sinc;
                         num = "";
                         readMode = 3;
                     }

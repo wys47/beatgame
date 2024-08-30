@@ -54,8 +54,8 @@ public class NodeCS : Variables
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) / maxMapSize - (maxMapSize - line)) * PlusBeatInOneUpdate;
 
-                    /*if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
-                    else pairDir = 3;*/
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10 && MapCtrl.difficulty >= 2) pairDir = 0;
+                    else pairDir = 3;
 
                     MapCtrl.tileCS[line].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
@@ -77,14 +77,14 @@ public class NodeCS : Variables
                     if (line <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - (maxMapSize - line + 1)) * PlusBeatInOneUpdate;
-                        //if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
-                        //else pairDir = 3;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && MapCtrl.difficulty >= 2) pairDir = 0;
+                        else pairDir = 3;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - (targetTileNum - 1) / maxMapSize - line) * PlusBeatInOneUpdate;
-                        //if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
-                        //else pairDir = 4;
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && MapCtrl.difficulty >= 2) pairDir = 0;
+                        else pairDir = 4;
                     }
 
                     MapCtrl.tileCS[maxMapSize * (maxMapSize - 1) + line].changeTileColorAndInfo(dir, false, color, targetTileNum);
@@ -107,14 +107,14 @@ public class NodeCS : Variables
                     if (line + 1 <= maxMapSize * 0.5f)
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (maxMapSize - line)) * PlusBeatInOneUpdate;
-                        /*if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
-                        else pairDir = 2;*/
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && MapCtrl.difficulty >= 2) pairDir = 0;
+                        else pairDir = 2;
                     }
                     else
                     {
                         pairActiveTiming = ActivatedTiming + (maxMapSize - ((targetTileNum - 1) % maxMapSize) - (line + 1)) * PlusBeatInOneUpdate;
-                        /*if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
-                        else pairDir = 1;*/
+                        if (pairDir <= unpairTapNodeGeneratePosibility * 10 && MapCtrl.difficulty >= 2) pairDir = 0;
+                        else pairDir = 1;
                     }
 
                     MapCtrl.tileCS[line * maxMapSize + maxMapSize].changeTileColorAndInfo(dir, false, color, targetTileNum);
@@ -135,8 +135,8 @@ public class NodeCS : Variables
                     }
 
                     pairActiveTiming = ActivatedTiming + ((targetTileNum - 1) % maxMapSize - (maxMapSize - line - 1)) * PlusBeatInOneUpdate;
-                    /*if (pairDir <= unpairTapNodeGeneratePosibility * 10 && DifficultyViewerCS.difficulty >= 2) pairDir = 0;
-                    else pairDir = 2;*/
+                    if (pairDir <= unpairTapNodeGeneratePosibility * 10 && MapCtrl.difficulty >= 2) pairDir = 0;
+                    else pairDir = 2;
 
                     MapCtrl.tileCS[line * maxMapSize + 1].changeTileColorAndInfo(dir, false, color, targetTileNum);
                 }
@@ -176,6 +176,7 @@ public class NodeCS : Variables
                     int genTileNum;
                     if (dir != 0) genTileNum = line;
                     else genTileNum = targetTileNum;
+                    print(genTileNum);
                     MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 2)
