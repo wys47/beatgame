@@ -72,7 +72,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
     private int wrongInputPenalty;
 
     //AI
-    private bool AIPlay = false;
+    public bool AIPlay = false;
     private int AIDebug = 0;
 
     private struct nodeActiveInfoDef

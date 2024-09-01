@@ -9434,7 +9434,7 @@ MonoBehaviour:
   musicBPMInput: 0000000080000000
   musicStartTimeInput:
   - 0
-  - 0.5
+  - 2.8
   gameSoundInput:
   - {fileID: 0}
   - {fileID: 0}

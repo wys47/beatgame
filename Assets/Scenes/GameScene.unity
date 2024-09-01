@@ -351,6 +351,7 @@ MonoBehaviour:
   - {fileID: 0}
   beatSensor: {fileID: 403367485}
   beatCnt: 0
+  AIPlay: 1
 --- !u!4 &38700387
 Transform:
   m_ObjectHideFlags: 0
