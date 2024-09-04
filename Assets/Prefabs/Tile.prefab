@@ -239,7 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b501d1d0f2548f47868edfb7ea5a728, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapCtrl: {fileID: 0}
   tileSprite: {fileID: 8054774567992879366}
   tileImage:
   - {fileID: 0}
@@ -377,7 +376,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.8888889, y: 0.9444444}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

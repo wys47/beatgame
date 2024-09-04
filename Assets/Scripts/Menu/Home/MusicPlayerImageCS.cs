@@ -34,6 +34,7 @@ public class MusicPlayerImageCS : MonoBehaviour
     private int pausePlayState;
 
     public RectTransform playBarKnobTr;
+    private float playBarKnobPosY;
     private float[] playBarMax = { -133.5f, 128f };
 
     public ProfileCS profileCS;
@@ -46,6 +47,8 @@ public class MusicPlayerImageCS : MonoBehaviour
             titles[i] = musicBars[i].transform.GetChild(0).GetComponent<TMP_Text>();
             artists[i] = musicBars[i].transform.GetChild(1).GetComponent<TMP_Text>();
         }
+
+        playBarKnobPosY = playBarKnobTr.anchoredPosition.y;
     }
 
     private void OnEnable()
@@ -83,14 +86,14 @@ public class MusicPlayerImageCS : MonoBehaviour
         pausePlayState = 1;
         pausePlayButton.sprite = pausePlaySprite[1];
 
-        playBarKnobTr.anchoredPosition = Vector2.right * playBarMax[0] + Vector2.up * -88.7f;
+        playBarKnobTr.anchoredPosition = Vector2.right * playBarMax[0] + Vector2.up * playBarKnobPosY;
     }
 
     private void Update()
     {
         if (pausePlayState == 1)
         {
-            playBarKnobTr.anchoredPosition = Vector2.right * (playBarMax[0] + (playBarMax[1] - playBarMax[0]) * audioSource.time / MusicManager.music[MusicManager.musicIndexByAlbum[currentAlbumNum, currentMusicNum]].length) + Vector2.up * -88.7f;
+            playBarKnobTr.anchoredPosition = Vector2.right * (playBarMax[0] + (playBarMax[1] - playBarMax[0]) * audioSource.time / MusicManager.music[MusicManager.musicIndexByAlbum[currentAlbumNum, currentMusicNum]].length) + Vector2.up * playBarKnobPosY;
         }
     }
 
@@ -151,8 +154,8 @@ public class MusicPlayerImageCS : MonoBehaviour
         pausePlayButton.sprite = pausePlaySprite[0];
 
         playBarKnobTr.position = Vector2.right * Input.mousePosition.x + Vector2.up * 145.3f;
-        if (playBarKnobTr.anchoredPosition.x > playBarMax[1]) playBarKnobTr.anchoredPosition = Vector2.right * playBarMax[1] + Vector2.up * -88.7f;
-        else if (playBarKnobTr.anchoredPosition.x < playBarMax[0]) playBarKnobTr.anchoredPosition = Vector2.right * playBarMax[0] + Vector2.up * -88.7f;
+        if (playBarKnobTr.anchoredPosition.x > playBarMax[1]) playBarKnobTr.anchoredPosition = Vector2.right * playBarMax[1] + Vector2.up * playBarKnobPosY;
+        else if (playBarKnobTr.anchoredPosition.x < playBarMax[0]) playBarKnobTr.anchoredPosition = Vector2.right * playBarMax[0] + Vector2.up * playBarKnobPosY;
 
         audioSource.time = MusicManager.music[MusicManager.musicIndexByAlbum[currentAlbumNum, currentMusicNum]].length * (playBarKnobTr.anchoredPosition.x - playBarMax[0]) / (playBarMax[1] - playBarMax[0]) ;
     }

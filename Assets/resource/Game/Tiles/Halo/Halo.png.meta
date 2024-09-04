@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7e22b803a790164408337c43880d7a6e
+guid: c53f9bb2cc070e04fa100957682a85f0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8712778243190278716
-    second: 37_0
+      213: -1801735411788782058
+    second: Halo_0
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -98,13 +98,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 37_0
+      name: Halo_0
       rect:
         serializedVersion: 2
-        x: 152
-        y: 95
+        x: 0
+        y: 0
         width: 16
-        height: 15
+        height: 17
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c534ef995ef51780800000000000000
-      internalID: -8712778243190278716
+      spriteID: 61666116033fef6e0800000000000000
+      internalID: -1801735411788782058
       vertices: []
       indices: 
       edges: []
@@ -121,7 +121,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -129,7 +129,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      37_0: -8712778243190278716
+      Halo_0: -1801735411788782058
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

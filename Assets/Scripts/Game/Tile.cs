@@ -25,9 +25,12 @@ public class Tile : Variables
     private float[] colorRGB = new float[4];
     private int fadeCnt;
 
+    private TilePrefabCS tilePrefabCS;
+
     private void Awake()
     {
         waitUntilAnimEnd = new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+        tilePrefabCS = GameObject.Find("Tiles").GetComponent<TilePrefabCS>();
     }
 
     public void OnEnable()
@@ -44,25 +47,23 @@ public class Tile : Variables
     public void onGenerate(int tileNum)
     {
         gameObject.name = tileNum.ToString();
+
+        tileSprite.sprite = tilePrefabCS.tileSprite[DeviceSettingCS.moduleSelected[1]];
         if (tileNum == 28)
         {
-            tileSprite.sprite = tileImage[1];
-            transform.Translate(new Vector2(-0.03f, -0.03f));
+            tileSprite.sprite = tilePrefabCS.tileSpriteS[DeviceSettingCS.moduleSelected[1]];
         }
         else if (tileNum == 29)
         {
-            tileSprite.sprite = tileImage[2];
-            transform.Translate(new Vector2(0.03f, -0.03f));
+            tileSprite.sprite = tilePrefabCS.tileSpriteD[DeviceSettingCS.moduleSelected[1]];
         }
         else if (tileNum == 36)
         {
-            tileSprite.sprite = tileImage[3];
-            transform.Translate(new Vector2(-0.03f, 0.03f));
+            tileSprite.sprite = tilePrefabCS.tileSpriteA[DeviceSettingCS.moduleSelected[1]];
         }
-        else if (tileNum == eventChainNodeCollideTileNum)
+        else if (tileNum == 37)
         {
-            tileSprite.sprite = tileImage[4];
-            transform.Translate(new Vector2(0.03f, 0.03f));
+            tileSprite.sprite = tilePrefabCS.tileSpriteW[DeviceSettingCS.moduleSelected[1]];
         }
     }
 
