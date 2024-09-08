@@ -15,6 +15,7 @@ public class MusicManager : MonoBehaviour
     public int[] musicBPMInput;
     public float[] musicStartTimeInput;
     public AudioClip[] gameSoundInput;
+    public Sprite[] albumSpriteInput;
 
     [HideInInspector] public static AudioClip[] music = new AudioClip[musicCnt + 1];
     [HideInInspector] public static string[] musicName = new string[musicCnt + 1];
@@ -23,7 +24,8 @@ public class MusicManager : MonoBehaviour
     [HideInInspector] public static int[] musicBPM = new int[musicCnt + 1];
     [HideInInspector] public static float[] musicStartTime = new float[musicCnt + 1];
     [HideInInspector] public static AudioClip[] gameSound = new AudioClip[gameSoundCnt + 1];
-    [HideInInspector] public static int[] musicCntByAlbum = { 2, 2 };
+    [HideInInspector] public static Sprite[] albumSprites = new Sprite[maxAlbum + 1];
+    [HideInInspector] public static int[] musicCntByAlbum = { 0, 2, 2 };
     [HideInInspector] public static int[,] musicIndexByAlbum = 
     {
         {0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -44,5 +46,6 @@ public class MusicManager : MonoBehaviour
         for (int i = 0; i < musicBPMInput.Length; ++i) musicBPM[i] = musicBPMInput[i];
         for (int i = 0; i < musicStartTimeInput.Length; ++i) musicStartTime[i] = musicStartTimeInput[i];
         for (int i = 0; i < gameSoundInput.Length; ++i) gameSound[i] = gameSoundInput[i];
+        for (int i = 0; i < albumSpriteInput.Length; ++i) albumSprites[i] = albumSpriteInput[i];
     }
 }

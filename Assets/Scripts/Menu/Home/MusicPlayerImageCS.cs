@@ -23,7 +23,6 @@ public class MusicPlayerImageCS : MonoBehaviour
 
     [HideInInspector] public static int currentMusicNum;
     [HideInInspector] public static int currentAlbumNum;
-    public Sprite[] albumSprites;
 
     public GameObject volumeSlider;
     private float[] volumeSliderMax = {-35.6f, 33.6f};
@@ -62,7 +61,7 @@ public class MusicPlayerImageCS : MonoBehaviour
         audioSource.clip = MusicManager.music[currentMusicNum];
         audioSource.Play();
 
-        currentAlbumImage.sprite = albumSprites[MusicManager.defaultAlbum];
+        currentAlbumImage.sprite = MusicManager.albumSprites[MusicManager.defaultAlbum];
 
         currentTitle.text = MusicManager.musicName[currentMusicNum];
         currentArtist.text = MusicManager.musicArtist[currentMusicNum];
@@ -72,7 +71,7 @@ public class MusicPlayerImageCS : MonoBehaviour
             if (i <= MusicManager.musicCntByAlbum[currentAlbumNum])
             {
                 musicBars[i].SetActive(true);
-                albumImages[i].sprite = albumSprites[currentAlbumNum];
+                albumImages[i].sprite = MusicManager.albumSprites[currentAlbumNum];
                 titles[i].text = MusicManager.musicName[MusicManager.musicIndexByAlbum[currentAlbumNum, i]];
                 artists[i].text = MusicManager.musicArtist[MusicManager.musicIndexByAlbum[currentAlbumNum, i]];
             }
