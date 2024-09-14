@@ -30,11 +30,6 @@ public class GameUIManager : MonoBehaviour
         musicArtist.text = MusicManager.musicArtist[MusicPlayerImageCS.currentMusicNum];
     }
 
-    private void Update()
-    {
-        
-    }
-
     public void volumeButtonUp()
     {
         volumeSlider.SetActive(!volumeSlider.activeSelf);
@@ -47,6 +42,11 @@ public class GameUIManager : MonoBehaviour
         else if (volumeKnobTr.anchoredPosition.y < volumeSliderMax[0]) volumeKnobTr.anchoredPosition = Vector2.up * volumeSliderMax[0];
 
         audioSource.volume = (volumeKnobTr.anchoredPosition.y - volumeSliderMax[0]) / (volumeSliderMax[1] - volumeSliderMax[0]);
+    }
+
+    public void stopAndRec()
+    {
+        print(2);
     }
 
     public void onMusicEnd()
