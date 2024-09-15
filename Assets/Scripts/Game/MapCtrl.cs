@@ -183,27 +183,30 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
             onFirstUpdate();
             gameState = 1;
         }
-        if (gameState == 1)
+        if (!GameUIManager.musicStop)
         {
-            if (itsTime == 0) StartCoroutine(timer(wiatForMusicStart));
-            if (itsTime == 2)
+            if (gameState == 1)
             {
-                gameState = 2;
-                itsTime = 0;
+                if (itsTime == 0) StartCoroutine(timer(wiatForMusicStart));
+                if (itsTime == 2)
+                {
+                    gameState = 2;
+                    itsTime = 0;
+                }
             }
-        }
-        if (gameState == 2)
-        {
-            if (afterBeatCntPlus) onAfterBeatCntPlus();
+            if (gameState == 2)
+            {
+                if (afterBeatCntPlus) onAfterBeatCntPlus();
 
-            float arc = beatSensor.eulerAngles.z;
-            if (arc > 360 - beatSensorRotateArc * 0.5f || arc <= beatSensorRotateArc * 0.5f || (arc > 180 - beatSensorRotateArc * 0.5f && arc <= 180 + beatSensorRotateArc * 0.5f)) beatCntPlus();
+                float arc = beatSensor.eulerAngles.z;
+                if (arc > 360 - beatSensorRotateArc * 0.5f || arc <= beatSensorRotateArc * 0.5f || (arc > 180 - beatSensorRotateArc * 0.5f && arc <= 180 + beatSensorRotateArc * 0.5f)) beatCntPlus();
 
-            clickTileCheck();
-            tapTileCheck();
-            chainTileCheck();
+                clickTileCheck();
+                tapTileCheck();
+                chainTileCheck();
 
-            beatSensor.Rotate(0, 0, beatSensorRotateArc);
+                beatSensor.Rotate(0, 0, beatSensorRotateArc);
+            }
         }
     }
 
@@ -554,7 +557,7 @@ public class MapCtrl : Variables //게임 시작이 되면 맵을 생성하고 게임을 진행하�
         }
     }
 
-    private void onMusicEnd()
+    public void onMusicEnd()
     {
         gameUIManager.onMusicEnd();
         gameObject.SetActive(false);
