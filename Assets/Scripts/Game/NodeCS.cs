@@ -176,7 +176,6 @@ public class NodeCS : Variables
                     int genTileNum;
                     if (dir != 0) genTileNum = line;
                     else genTileNum = targetTileNum;
-                    print(genTileNum);
                     MapCtrl.tileCS[genTileNum].changeTileColorAndInfo(dir, false, color, 0);
                 }
                 else if (dir == 2)
